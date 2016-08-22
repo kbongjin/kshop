@@ -58,13 +58,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/user/locale", "/user/join").permitAll()
 			.antMatchers("/account/*/resetPassword", "/account/*/changePassword").permitAll()
 			.antMatchers(HttpMethod.GET, "/code/list/*").permitAll()
-			.antMatchers(HttpMethod.GET, "/room/*").permitAll()
-			.antMatchers(HttpMethod.GET, "/hashtag/mains").permitAll()
 			
 			//.antMatchers(HttpMethod.GET, "/user/**").access("hasRole('ROLE_ADMIN')")
 
 			.anyRequest()// other request
-			.authenticated()
+			.permitAll()
+			//.authenticated()
 			
 			.and().exceptionHandling().accessDeniedPage("/auth/accessDenied")
 			.and().formLogin()
