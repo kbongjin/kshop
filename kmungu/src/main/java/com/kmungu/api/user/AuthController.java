@@ -78,16 +78,19 @@ public class AuthController {
 		return jsonRes;
 	}
 
-	@ResponseStatus(value = HttpStatus.FORBIDDEN)
+	@ResponseStatus(value = HttpStatus.UNAUTHORIZED)
 	@RequestMapping("/notLogin")
-	@ResponseBody
-	public SimpleJsonResponse notLogin(SimpleJsonResponse jsonRes, HttpServletResponse response, HttpServletRequest request) {
-
+	//@ResponseBody
+	//public SimpleJsonResponse notLogin(SimpleJsonResponse jsonRes, HttpServletResponse response, HttpServletRequest request) {
+	public String notLogin(SimpleJsonResponse jsonRes, HttpServletResponse response, HttpServletRequest request) {
+		/*
 		jsonRes.setSuccess(false);
 		jsonRes.setMsg(messageSource.getMessage("auth.not.login", null, localeResolver.resolveLocale(request)));
 		jsonRes.setData("notLogin");
 
 		return jsonRes;
+		*/
+		return "error.401";
 	}
 
 	@ResponseStatus(value = HttpStatus.FORBIDDEN)

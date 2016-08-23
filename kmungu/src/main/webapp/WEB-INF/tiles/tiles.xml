@@ -24,9 +24,8 @@
     </definition>
     
 
-	<!-- 
-    <definition name="site.greeting" extends="layout.basic">
-        <put-attribute name="body" value="/WEB-INF/tiles/view/greeting.jsp" />
+	
+    <definition name="error.*" template="/WEB-INF/pages/page_{1}.jsp">
     </definition>
-     -->
+    
 </tiles-definitions>

@@ -1,10 +1,11 @@
 package com.kmungu.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.access.expression.SecurityExpressionHandler;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.RememberMeAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
@@ -41,6 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				"/", 
 				"/*.html", 
 				"/resources/**", 
+				"/WEB-INF/**", 
 
 				
 				"/auth/notLogin*", 
@@ -52,14 +56,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-			//.anonymous()
-			//.disable()
+			.anonymous()
+			.disable()
 			.authorizeRequests()
+			.expressionHandler(webExpressionHandler())
+			
 			.antMatchers("/user/locale", "/user/join").permitAll()
 			.antMatchers("/account/*/resetPassword", "/account/*/changePassword").permitAll()
 			.antMatchers(HttpMethod.GET, "/code/list/*").permitAll()
 			
-			//.antMatchers(HttpMethod.GET, "/user/**").access("hasRole('ROLE_ADMIN')")
+			.antMatchers("/dashboard").authenticated()
 
 			.anyRequest()// other request
 			.permitAll()
@@ -70,6 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.usernameParameter("loginId")
 				.passwordParameter("passwd")
 				.loginPage("/auth/notLogin")
+				//.loginPage("/page_402.html")
 				.loginProcessingUrl("/auth/login")
 				.defaultSuccessUrl("/auth/onAfterLogin", true)
 				.failureUrl("/auth/loginFail")
@@ -108,6 +115,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public PasswordEncoder passwordEncoder() {
 		return NoOpPasswordEncoder.getInstance();
 		// return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
+	public RoleHierarchy roleHierarchy() {
+		RoleHierarchyImpl r = new RoleHierarchyImpl();
+		r.setHierarchy("ROLE_ADMIN > ROLE_ADMIN_USER");
+		return r;
+	}
+
+	private SecurityExpressionHandler<FilterInvocation> webExpressionHandler() {
+		DefaultWebSecurityExpressionHandler defaultWebSecurityExpressionHandler = new DefaultWebSecurityExpressionHandler();
+		defaultWebSecurityExpressionHandler
+				.setRoleHierarchy(roleHierarchy());
+		return defaultWebSecurityExpressionHandler;
 	}
 	
 	@Bean

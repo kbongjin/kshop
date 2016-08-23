@@ -22,6 +22,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.kmungu.api.common.mvc.LoginCheckInterceptor;
 
 /**
  * Spring MVC Configuration
@@ -120,6 +121,12 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
+        registry.addInterceptor(loginCheckInterceptor()).addPathPatterns("/dashboard");
+    }
+    
+    @Bean
+    public LoginCheckInterceptor loginCheckInterceptor() {
+    	return new LoginCheckInterceptor();
     }
 
 }
