@@ -23,8 +23,8 @@ public class AccountAuth {
 	@Column(name = "id")
 	private Integer id;//
 	
-	@Column(name = "account_id")
-	private Long accountId;//
+	@Column(name = "user_id")
+	private Long userId;//
 	
 	@Column(name = "authority")
 	private String authority;//권한
@@ -33,7 +33,6 @@ public class AccountAuth {
 	 * 
 	 */
 	public AccountAuth() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -50,18 +49,12 @@ public class AccountAuth {
 		this.id = id;
 	}
 
-	/**
-	 * @return the accountId
-	 */
-	public Long getAccountId() {
-		return accountId;
+	public Long getUserId() {
+		return userId;
 	}
 
-	/**
-	 * @param accountId the accountId to set
-	 */
-	public void setAccountId(Long accountId) {
-		this.accountId = accountId;
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 	/**

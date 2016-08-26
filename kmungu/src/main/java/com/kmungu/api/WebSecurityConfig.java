@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.rememberme.RememberMeAuth
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 
 import com.kmungu.api.common.security.RefreshableRememberMeAuthenticationFilter;
-import com.kmungu.api.user.AccountService;
+import com.kmungu.api.user.UserService;
 
 /**
  * <pre>
@@ -36,7 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private final static String REMEMBER_ME_KEY = "rem-me-key";
 
 	@Autowired
-	private AccountService userService;
+	private UserService userService;
 	
 	@Override
 	public void configure(WebSecurity web) throws Exception {

@@ -51,8 +51,8 @@ public class PassresetToken implements Serializable {
 	private static final long serialVersionUID = -8995962578792426679L;
 
 	@Id
-	@Column(name = "account_id")
-	private Long accountId;//
+	@Column(name = "user_id")
+	private Long userId;//
 	
 	@Column(name = "token")
 	private String token;//
@@ -64,8 +64,8 @@ public class PassresetToken implements Serializable {
 	private java.util.Date createDt;//
 	
 	@OneToOne
-	@JoinColumn(name = "account_id", insertable = false, updatable = false)
-	private Account account;
+	@JoinColumn(name = "user_id", insertable = false, updatable = false)
+	private User user;
 	
 	
 
@@ -77,8 +77,8 @@ public class PassresetToken implements Serializable {
 	 * 
 	 * </pre>
 	 */
-	public PassresetToken(Long accountId, String token, Date expiredDt) {
-		this.accountId = accountId;
+	public PassresetToken(Long userId, String token, Date expiredDt) {
+		this.userId = userId;
 		this.token = token;
 		this.expireDt = expiredDt;
 	}
@@ -125,21 +125,21 @@ public class PassresetToken implements Serializable {
 	public void setCreateDt(java.util.Date createDt) {
 		this.createDt = createDt;
 	}
-	
-	public Long getAccountId() {
-		return accountId;
+
+	public Long getUserId() {
+		return userId;
 	}
 
-	public void setAccountId(Long accountId) {
-		this.accountId = accountId;
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
-	public Account getAccount() {
-		return account;
+	public User getUser() {
+		return user;
 	}
 
-	public void setAccount(Account account) {
-		this.account = account;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	@PrePersist

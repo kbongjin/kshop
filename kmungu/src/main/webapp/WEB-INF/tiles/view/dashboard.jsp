@@ -5,32 +5,32 @@
                 <div class="tile-stats">
                   <div class="icon"><i class="fa fa-caret-square-o-right"></i></div>
                   <div class="count">179</div>
-                  <h3>New Sign ups</h3>
-                  <p>Lorem ipsum psdea itgum rixt.</p>
+                  <h3>총 판매금액</h3>
+                  <p>이번달 총 판매금액</p>
                 </div>
               </div>
               <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
                 <div class="tile-stats">
                   <div class="icon"><i class="fa fa-comments-o"></i></div>
                   <div class="count">179</div>
-                  <h3>New Sign ups</h3>
-                  <p>Lorem ipsum psdea itgum rixt.</p>
+                  <h3>총 판매건수</h3>
+                  <p>이번달 총 판매건수</p>
                 </div>
               </div>
               <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
                 <div class="tile-stats">
                   <div class="icon"><i class="fa fa-sort-amount-desc"></i></div>
                   <div class="count">179</div>
-                  <h3>New Sign ups</h3>
-                  <p>Lorem ipsum psdea itgum rixt.</p>
+                  <h3>총 회원수</h3>
+                  <p>누적 총 회원수</p>
                 </div>
               </div>
               <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
                 <div class="tile-stats">
                   <div class="icon"><i class="fa fa-check-square-o"></i></div>
                   <div class="count">179</div>
-                  <h3>New Sign ups</h3>
-                  <p>Lorem ipsum psdea itgum rixt.</p>
+                  <h3>회원가입수</h3>
+                  <p>이번달 총 회원가입수</p>
                 </div>
               </div>
             </div>
@@ -39,7 +39,7 @@
               <div class="col-md-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2>Transaction Summary <small>Weekly progress</small></h2>
+                    <h2>주간 판매금액 <small>Weekly progress</small></h2>
                     <div class="filter">
                       <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
                         <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
@@ -49,6 +49,7 @@
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
+                  
                     <div class="col-md-9 col-sm-12 col-xs-12">
                       <div class="demo-container" style="height:280px">
                         <div id="placeholder33x" class="demo-placeholder"></div>
@@ -82,7 +83,7 @@
                     <div class="col-md-3 col-sm-12 col-xs-12">
                       <div>
                         <div class="x_title">
-                          <h2>Top Profiles</h2>
+                          <h2>미발송 주문건</h2>
                           <ul class="nav navbar-right panel_toolbox">
                             <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                             </li>

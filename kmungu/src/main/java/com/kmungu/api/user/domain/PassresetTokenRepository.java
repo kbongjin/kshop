@@ -18,6 +18,6 @@ public interface PassresetTokenRepository extends JpaRepository<PassresetToken, 
 	
 	@Modifying
 	@Query("update PassresetToken pt set pt.expireDt = NOW() where pt.id = ?1")
-	int updateExpireDt(Long accountId);
+	int updateExpireDt(Long userId);
 	
 }

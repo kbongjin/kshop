@@ -1,28 +1,10 @@
-/* 
- * Copyright (C) 2012-2015 Open Source Consulting, Inc. All rights reserved by Open Source Consulting, Inc.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+/**
  * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
- * Revision History
- * Author			Date				Description
- * ---------------	----------------	------------
- * BongJin Kwon		2016. 7. 15.		First Draft.
  */
 package com.kmungu.api.user.domain;
 
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -32,25 +14,24 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
- * <pre>
- * 
- * </pre>
- * @author Bongjin Kwon
- * @version 1.0
+ * @author Administrator
+ *
  */
 @Entity
 @Table(name = "user")
-//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) //http://stackoverflow.com/questions/24994440/no-serializer-found-for-class-org-hibernate-proxy-pojo-javassist-javassist
-public class User implements Serializable {
+public class User implements UserDetails{
 
-	private static final long serialVersionUID = 7382139896085707035L;
+	private static final long serialVersionUID = -7327265341863624098L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -69,28 +50,46 @@ public class User implements Serializable {
 	@Column(name = "age")
 	private short age;//
 	
+	@Column(name = "login_id")
+	private String loginId;//
 	
-	@Column(name = "create_dt", updatable = false)
+	@Column(name = "passwd")
+	private String passwd;//
+	
+	@Column(name = "enabled")
+	private boolean enabled;//
+	
+	@Column(name = "locked")
+	private boolean locked;//
+	
+	@Column(name = "last_login_dt")
+	private java.util.Date lastLoginDt;//
+	
+	@Column(name = "post_no")
+	private String postNo;//
+	
+	@Column(name = "addr1")
+	private String addr1;//
+	
+	@Column(name = "addr2")
+	private String addr2;//
+	
+	@Column(name = "phone_no")
+	private String phoneNo;//
+	
+	@Column(name = "create_dt")
 	private java.util.Date createDt;//생성일시
 	
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-	@JsonIgnore
-	private List<Account> accounts;
-	
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name="user_id")
+	private List<AccountAuth> accountAuths;
 
 	/**
-	 * <pre>
 	 * 
-	 * </pre>
 	 */
 	public User() {
+		
 	}
-	
-	public User(Long id) {
-		super();
-		this.id = id;
-	}
-
 
 	/**
 	 * @return the id
@@ -163,6 +162,116 @@ public class User implements Serializable {
 	}
 
 	/**
+	 * @return the loginId
+	 */
+	public String getLoginId() {
+		return loginId;
+	}
+
+	/**
+	 * @param loginId the loginId to set
+	 */
+	public void setLoginId(String loginId) {
+		this.loginId = loginId;
+	}
+
+	/**
+	 * @return the passwd
+	 */
+	public String getPasswd() {
+		return passwd;
+	}
+
+	/**
+	 * @param passwd the passwd to set
+	 */
+	public void setPasswd(String passwd) {
+		this.passwd = passwd;
+	}
+
+	public boolean isLocked() {
+		return locked;
+	}
+
+	public void setLocked(boolean locked) {
+		this.locked = locked;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	/**
+	 * @return the lastLoginDt
+	 */
+	public java.util.Date getLastLoginDt() {
+		return lastLoginDt;
+	}
+
+	/**
+	 * @param lastLoginDt the lastLoginDt to set
+	 */
+	public void setLastLoginDt(java.util.Date lastLoginDt) {
+		this.lastLoginDt = lastLoginDt;
+	}
+
+	/**
+	 * @return the postNo
+	 */
+	public String getPostNo() {
+		return postNo;
+	}
+
+	/**
+	 * @param postNo the postNo to set
+	 */
+	public void setPostNo(String postNo) {
+		this.postNo = postNo;
+	}
+
+	/**
+	 * @return the addr1
+	 */
+	public String getAddr1() {
+		return addr1;
+	}
+
+	/**
+	 * @param addr1 the addr1 to set
+	 */
+	public void setAddr1(String addr1) {
+		this.addr1 = addr1;
+	}
+
+	/**
+	 * @return the addr2
+	 */
+	public String getAddr2() {
+		return addr2;
+	}
+
+	/**
+	 * @param addr2 the addr2 to set
+	 */
+	public void setAddr2(String addr2) {
+		this.addr2 = addr2;
+	}
+
+	/**
+	 * @return the phoneNo
+	 */
+	public String getPhoneNo() {
+		return phoneNo;
+	}
+
+	/**
+	 * @param phoneNo the phoneNo to set
+	 */
+	public void setPhoneNo(String phoneNo) {
+		this.phoneNo = phoneNo;
+	}
+
+	/**
 	 * @return the createDt
 	 */
 	public java.util.Date getCreateDt() {
@@ -175,19 +284,63 @@ public class User implements Serializable {
 	public void setCreateDt(java.util.Date createDt) {
 		this.createDt = createDt;
 	}
+
+	public List<AccountAuth> getAccountAuths() {
+		return accountAuths;
+	}
+
+	public void setAccountAuths(List<AccountAuth> accountAuths) {
+		this.accountAuths = accountAuths;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		Collection<SimpleGrantedAuthority> authorities = new ArrayList<SimpleGrantedAuthority>();
+		if (this.accountAuths != null) {
+			for (AccountAuth auth : this.accountAuths) {
+				if (auth != null) {
+					authorities.add(new SimpleGrantedAuthority(auth.getAuthority()));
+				}
+			}
+		}
+
+		return authorities;
+	}
+
+	@Override
+	public String getPassword() {
+		
+		return this.passwd;
+	}
+
+	@Override
+	public String getUsername() {
+		return this.loginId;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return !this.locked;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return this.enabled;
+	}
 	
-	public List<Account> getAccounts() {
-		return accounts;
-	}
-
-	public void setAccounts(List<Account> accounts) {
-		this.accounts = accounts;
-	}
-
 	@PrePersist
 	public void preInsert() {
 		this.createDt = new Date();
 	}
 
 }
-//end of GstarUser.java

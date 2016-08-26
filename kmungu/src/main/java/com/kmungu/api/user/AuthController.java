@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +20,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.LocaleResolver;
 
 import com.kmungu.api.common.model.SimpleJsonResponse;
-import com.kmungu.api.user.domain.Account;
+import com.kmungu.api.common.util.WebUtil;
+import com.kmungu.api.user.domain.User;
 
 /**
  * <pre>
@@ -42,9 +42,6 @@ public class AuthController {
 	
 	@Autowired
 	private LocaleResolver localeResolver;
-
-	@Autowired
-	private AccountService service;
 
 	/**
 	 * <pre>
@@ -70,10 +67,9 @@ public class AuthController {
 	@ResponseBody
 	public SimpleJsonResponse onAfterLogin(SimpleJsonResponse jsonRes) {
 
-		Account loginUser = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		loginUser.getUser().getName();// lazy loading.
+		User user = WebUtil.getLoginUser();
 		
-		jsonRes.setData(loginUser);
+		jsonRes.setData(user);
 		//service.updateLastLogin(((GstarAccount) loginUser).getId());
 		return jsonRes;
 	}
