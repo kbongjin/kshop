@@ -1,15 +1,22 @@
 package com.kmungu.api.product;
 
 
-import java.util.List;
+import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
+import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.kmungu.api.common.model.SimpleJsonResponse;
 import com.kmungu.api.product.domain.Product;
 
@@ -22,12 +29,18 @@ import com.kmungu.api.product.domain.Product;
  * @author Bong-Jin Kwon
  * @version 1.0
  */
-@Controller
+@RestController
 @RequestMapping("/product")
 public class ProductController {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
 	
 	@Autowired
 	private ProductService service;
+	
+	@Autowired
+	private MessageSource messageSource;
+	
 
 	/**
 	 * <pre>
@@ -37,14 +50,31 @@ public class ProductController {
 	public ProductController() {
 		// TODO Auto-generated constructor stub
 	}
-	
+	/*
 	@RequestMapping(value="/all", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Product> allList(){
+	public GridJsonResponse allList(GridJsonResponse jsonRes){
 	
 		List<Product> list = service.getProductAllList();
+
+		jsonRes.setTotal(list.size());
+		jsonRes.setList(list);
 		
-		return list;
+		return jsonRes;
+	}*/
+	
+	@RequestMapping(value="/list", method = RequestMethod.GET)
+	//public SimpleJsonResponse getList(SimpleJsonResponse jsonRes, @PageableDefault(sort = { "createDt" }, direction = Direction.DESC) Pageable pageable, String search){
+	public DataTablesOutput<Product> getList(@Valid DataTablesInput input){
+	/*
+		Page<Product> list = service.getProductList(pageable, search);
+
+		jsonRes.setData(list);
+		
+		return jsonRes;
+		*/
+
+		return service.getProductList(input);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
@@ -52,7 +82,7 @@ public class ProductController {
 	public SimpleJsonResponse save(SimpleJsonResponse jsonRes, Product product){
 		
 		service.save(product);
-		//jsonRes.setMsg(" 정상적으로 생성되었습니다.");
+		//jsonRes.setMsg(messageSource.getMessage("account.email.not.reg", new String[]{userEmail}, locale));
 		
 		
 		return jsonRes;

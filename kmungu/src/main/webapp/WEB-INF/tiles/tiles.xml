@@ -24,8 +24,4 @@
     </definition>
     
 
-	
-    <definition name="error.*" template="/WEB-INF/pages/page_{1}.jsp">
-    </definition>
-    
 </tiles-definitions>

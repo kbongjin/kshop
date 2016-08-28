@@ -22,7 +22,11 @@
     <tiles:insertAttribute name="page-css" />
 
     <!-- Custom Theme Style -->
-    <link href="${res}/css/custom.min.css" rel="stylesheet">
+    <link href="${res}/css/custom.css" rel="stylesheet">
+    <style type="text/css">
+    div.dataTables_processing {padding: 4px 0 !important;}
+    
+    </style>
   </head>
 
   <body class="nav-md">
@@ -50,6 +54,27 @@
 	      <!-- /footer content -->
       </div>
     </div>
+    <!-- Modal -->
+	<div class="modal fade" id="kmModal" tabindex="-1" role="dialog" aria-labelledby="kmModalLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="kmModalLabel">Modal title</h4>
+	      </div>
+	      <div class="modal-body">
+	      	<div style="text-align: center;">
+		        <i class="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
+				<span>Loading...</span>
+			</div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        <button type="button" class="btn btn-primary">Save changes</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
 
     <!-- jQuery -->
     <script src="${res}/vendors/jquery/dist/jquery.min.js"></script>

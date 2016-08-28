@@ -1,11 +1,9 @@
 package com.kmungu.api.product.domain;
 
-import java.util.List;
-
+import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
-
-import com.kmungu.api.product.domain.Product;
 
 /**
  * ProductRepository
@@ -14,7 +12,7 @@ import com.kmungu.api.product.domain.Product;
  * @version 1.0
  */
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Integer> {
+public interface ProductRepository extends DataTablesRepository<Product, Integer>{
 
 	
 }

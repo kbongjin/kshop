@@ -423,7 +423,7 @@ table.no-margin .progress {
 h1, .h1, h2, .h2, h3, .h3 {
   margin-top: 10px;
   margin-bottom: 10px; }
-
+/*
 a {
   color: #5A738E;
   text-decoration: none; }
@@ -433,7 +433,7 @@ a, a:visited, a:focus, a:active, :visited, :focus, :active, .btn:focus, .btn:act
 
 a:hover, a:focus {
   text-decoration: none; }
-
+*/
 .navbar {
   margin-bottom: 0; }
 
@@ -1787,11 +1787,11 @@ a.star {
   margin: 0 0 15px !important;
   text-align: left;
   width: 100%; }
-
+/*
 .buttons, button, .btn {
   margin-bottom: 5px;
   margin-right: 5px; }
-
+*/
 .btn-group-vertical .btn, .btn-group .btn {
   margin-bottom: 0;
   margin-right: 0; }

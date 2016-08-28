@@ -15,9 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.amazonaws.services.s3.internal.Mimetypes;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-
 
 /**
  * 파일 관련 유틸.
@@ -207,12 +204,13 @@ public abstract class FileUtil {
 	 * @param fileName
 	 * @return
 	 */
+	/*
 	private static ObjectMetadata getMetadata(String fileName){
 		ObjectMetadata metadata = new ObjectMetadata();
 		metadata.setContentType(Mimetypes.getInstance().getMimetype(fileName.toLowerCase()));
 		return metadata;
 	}
-
+*/
 
 	/**
 	 * <pre>

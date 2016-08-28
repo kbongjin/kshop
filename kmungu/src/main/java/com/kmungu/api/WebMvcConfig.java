@@ -8,6 +8,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.data.jpa.datatables.repository.DataTablesRepositoryFactoryBean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -32,6 +34,7 @@ import com.kmungu.api.common.mvc.LoginCheckInterceptor;
  */
 @Configuration
 //@EnableAsync
+@EnableJpaRepositories(repositoryFactoryBeanClass = DataTablesRepositoryFactoryBean.class)
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
 	//@Autowired
@@ -43,6 +46,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	@Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/dashboard").setViewName("page.dashboard");
+        registry.addViewController("/productMng").setViewName("page.productMng");
+        registry.addViewController("/productForm").setViewName("productForm");
     }
 
 	@Override

@@ -122,10 +122,10 @@
 		</dependency>
 
 	    <dependency>
-	    	<groupId>com.amazonaws</groupId>
-	    	<artifactId>aws-java-sdk-s3</artifactId>
-	    	<version>1.11.24</version>
-	    </dependency>
+		    <groupId>com.github.darrachequesne</groupId>
+		    <artifactId>spring-data-jpa-datatables</artifactId>
+		    <version>2.5</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>gstar</finalName>

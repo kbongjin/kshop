@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-    	<div class="col-md-3 left_col">
+    	<div class="col-md-3 left_col menu_fixed">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><i class="fa fa-envira"></i> <span>K문구 관리자페이지</span></a>
+              <a href="dashboard" class="site_title"><i class="fa fa-envira"></i> <span>K문구 관리자페이지</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -36,7 +36,7 @@
                   </li>
                   <li><a><i class="fa fa-edit"></i> 상품/재고 관리 <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="form.html">상품/재고 관리</a></li>
+                      <li><a href="productMng">상품/재고 관리</a></li>
                       <li><a href="form_advanced.html">상품 카테고리 관리</a></li>
                     </ul>
                   </li>

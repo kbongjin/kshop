@@ -86,7 +86,7 @@ public class AuthController {
 
 		return jsonRes;
 		*/
-		return "error.401";
+		return "page_401";
 	}
 
 	@ResponseStatus(value = HttpStatus.FORBIDDEN)
