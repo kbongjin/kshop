@@ -1,11 +1,15 @@
 package com.kmungu.api.product;
 
 
+import java.io.File;
+import java.io.IOException;
+
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
@@ -13,8 +17,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.kmungu.api.common.model.SimpleJsonResponse;
@@ -40,6 +46,9 @@ public class ProductController {
 	
 	@Autowired
 	private MessageSource messageSource;
+	
+	@Value("${km.upload.location}")
+	private String uploadPath;
 	
 
 	/**
@@ -79,14 +88,42 @@ public class ProductController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public SimpleJsonResponse save(SimpleJsonResponse jsonRes, Product product){
+	public SimpleJsonResponse save(SimpleJsonResponse jsonRes, Product product, @RequestParam(name = "imgFiles", required = false) MultipartFile[] imgFiles){
 		
-		service.save(product);
+		try {
+			for (int i = 0; i < imgFiles.length; i++) {
+				File uploadedFile = new File(uploadPath + imgFiles[i].getOriginalFilename());
+				imgFiles[i].transferTo(uploadedFile);
+				
+				if (i == 0) {
+					product.setImg1Path(uploadedFile.getAbsolutePath());
+				} else if (i == 1) {
+					product.setImg2Path(uploadedFile.getAbsolutePath());
+				} else if (i == 2) {
+					product.setImg3Path(uploadedFile.getAbsolutePath());
+				}
+				
+			}
+			
+			//gstarContents.setUrl(videoId);
+			//gstarContents.setLocale(locale.getLanguage());
+			service.save(product);
+			
+		
+		} catch (IOException e) {
+			LOGGER.error(e.toString(), e);
+			jsonRes.setSuccess(false);
+			jsonRes.setMsg("");
+		}
+		
+		
 		//jsonRes.setMsg(messageSource.getMessage("account.email.not.reg", new String[]{userEmail}, locale));
 		
 		
 		return jsonRes;
 	}
+	
+	
 	
 	@RequestMapping(value="/{productId}", method = RequestMethod.DELETE)
 	@ResponseBody

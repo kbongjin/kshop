@@ -5,6 +5,8 @@
     <script src="${res}/vendors/datatables.net-select/js/dataTables.select.min.js"></script>
     <script src="${res}/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
     <script src="${res}/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    
+    <!--
     <script src="${res}/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
     <script src="${res}/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
     <script src="${res}/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
@@ -16,8 +18,22 @@
     <script src="${res}/vendors/jszip/dist/jszip.min.js"></script>
     <script src="${res}/vendors/pdfmake/build/pdfmake.min.js"></script>
     <script src="${res}/vendors/pdfmake/build/vfs_fonts.js"></script>
+    -->
     <script src="${res}/js/jquery.spring-friendly.min.js"></script>
-
+    <!-- Select2
+    <script src="${res}/vendors/select2/dist/js/select2.full.min.js"></script>
+     -->
+    <script src="${res}/js/jquery.form.min.js"></script>
+    <!-- the main fileinput plugin file -->
+	<script src="${res}/vendors/bootstrap-fileinput/js/fileinput.min.js"></script>
+	<!-- Parsley -->
+    <script src="${res}/vendors/parsleyjs/dist/parsley.min.js"></script>
+    <script src="${res}/vendors/parsleyjs/dist/i18n/ko.js"></script>
+	<!-- PNotify -->
+    <script src="${res}/vendors/pnotify/dist/pnotify.js"></script>
+    <script src="${res}/vendors/pnotify/dist/pnotify.buttons.js"></script>
+    <script src="${res}/vendors/pnotify/dist/pnotify.nonblock.js"></script>
+	
     <!-- Custom Theme Scripts -->
     <script src="${res}/js/custom.min.js"></script>
 
@@ -82,30 +98,6 @@
          }
         }); 
         
-        /*
-        $('#datatable tbody').on( 'click', 'tr', function () {
-            if ( $(this).hasClass('selected') ) {
-                $(this).removeClass('selected');
-            }
-            else {
-            	oTable.$('tr.selected').removeClass('selected');
-                $(this).addClass('selected');
-            }
-        } );
-        
-        
-        $('#datatable tbody').on( 'click', 'tr', function () {
-            if ( $(this).hasClass('success') ) {
-                $(this).removeClass('success');
-            }
-            else {
-            	oTable.$('tr.success').removeClass('success');
-                $(this).addClass('success');
-            }
-        } );
-        */
-        
-        
         oTable.on( 'select', function ( e, dt, type, indexes ) {
             var rowData = oTable.rows( indexes ).data().toArray();
             //events.prepend( '<div><b>'+type+' selection</b> - '+JSON.stringify( rowData )+'</div>' );
@@ -113,11 +105,58 @@
             $('#kmModal').modal('show');
             $('#kmModal .modal-body').load( "productForm", function() {
             	  //alert( "Load was performed." );
+            	console.log('loaded productForm.jsp');
+            	initProductForm();
             });
         } );
         
+        $("#modalSave").click(function(){
+   	   		//alert("click!! btnReg");
+        	$('#pfrm').parsley().validate();
+        	
+        	$('#pfrm').ajaxSubmit({
+                beforeSubmit: function (data,form,option) {
+					var valid = $('#pfrm').parsley().isValid();
+					console.log('valid: ' + valid);
+                    return valid;
+                },
+                success: function(response,status){
+                    //성공후 서버에서 받은 데이터 처리
+                    alert("업로드 성공!!");
+                },
+                error: function(){
+                    //에러발생을 위한 code페이지
+                }                               
+            });
+   	   	});
+        
+        new PNotify({
+            title: "PNotify",
+            type: "info",
+            text: "Welcome. Try hovering over me. You can click things behind me, because I'm non-blocking.",
+            nonblock: {
+                nonblock: true
+            },
+            addclass: 'dark',
+            styling: 'bootstrap3',
+            hide: false,
+            before_close: function(PNotify) {
+              PNotify.update({
+                title: PNotify.options.title + " - Enjoy your Stay",
+                before_close: null
+              });
+
+              PNotify.queueRemove();
+
+              return false;
+            }
+          });
         	
         
       });
+      
+      function initProductForm() {
+    	  $("#pimgs").fileinput({showCaption: false});
+      }
     </script>
     <!-- /Datatables -->

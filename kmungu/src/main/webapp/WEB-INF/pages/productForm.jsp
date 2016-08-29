@@ -1,28 +1,28 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<form class="form-horizontal form-label-left">
+<form id="pfrm" action="product" method="POST" data-parsley-validate class="form-horizontal form-label-left" enctype="multipart/form-data">
 
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">제품명</label>
-                        <div class="col-md-9 col-sm-9 col-xs-12">
-                          <input type="text" class="form-control" placeholder="Default Input">
+                        <label class="control-label col-md-2 col-sm-2 col-xs-12">상품명</label>
+                        <div class="col-md-10 col-sm-10 col-xs-12">
+                          <input type="text" name="name" class="form-control" required>
                         </div>
                       </div>
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">제품가격</label>
-                        <div class="col-md-3 col-sm-3 col-xs-12">
-                          <input type="text" class="form-control" placeholder="판매원가">
+                        <label class="control-label col-md-2 col-sm-2 col-xs-12">상품가격</label>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                          <input type="text" name="retailPrice" class="form-control" placeholder="판매원가" required>
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-12">
-                          <input type="text" class="form-control" placeholder="할인율">
+                          <input type="text" name="discountRate" class="form-control" placeholder="할인율">
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-12">
-                          <input type="text" class="form-control" placeholder="할인판매가격">
+                          <input type="text" name="sellingPrice" class="form-control" placeholder="할인판매가격">
                         </div>
                       </div>
                       <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">제품 카테고리</label>
-                        <div class="col-md-9 col-sm-9 col-xs-12">
-                          <select class="select2_group form-control">
+                        <label class="control-label col-md-2 col-sm-2 col-xs-12">상품 카테고리</label>
+                        <div class="col-md-10 col-sm-10 col-xs-12">
+                          <select name="categoryCd" class="select2_group form-control" required>
                             <optgroup label="Alaskan/Hawaiian Time Zone">
                               <option value="AK">Alaska</option>
                               <option value="HI">Hawaii</option>
@@ -85,6 +85,12 @@
                             </optgroup>
                           </select>
                         </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="control-label col-md-2 col-sm-2 col-xs-12">상품 이미지</label>
+                          <div class="col-md-10 col-sm-10 col-xs-12">
+                          	<input id="pimgs" name="imgFiles" type="file" multiple class="file-loading">
+                          </div>
                       </div>
 					<!-- 
                       <div class="ln_solid"></div>

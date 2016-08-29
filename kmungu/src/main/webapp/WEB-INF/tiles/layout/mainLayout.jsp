@@ -56,7 +56,7 @@
     </div>
     <!-- Modal -->
 	<div class="modal fade" id="kmModal" tabindex="-1" role="dialog" aria-labelledby="kmModalLabel">
-	  <div class="modal-dialog" role="document">
+	  <div class="modal-dialog modal-lg" role="document">
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -70,7 +70,7 @@
 	      </div>
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-	        <button type="button" class="btn btn-primary">Save changes</button>
+	        <button id="modalSave" type="button" class="btn btn-primary">저장</button>
 	      </div>
 	    </div>
 	  </div>
@@ -85,6 +85,23 @@
     <!-- NProgress -->
     <script src="${res}/vendors/nprogress/nprogress.js"></script>
     
+    <!-- global java script -->
+	<script type="text/javascript">
+	    $( document ).ready(function() {
+	    	$( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
+	    		
+	    		if (jqxhr.responseText == '') {
+	    			alert("서버가 응답하지 않습니다. 서버상태를 확인하세요.");
+	    		} else if (jqxhr.status == 401) {
+					alert("로그인 정보가 만료되었습니다. 다시 로그인해주세요.");
+					window.location.href = "index.html";
+				}
+	    		
+			    //alert( "Error : " + thrownError + " of " + settings.url );
+			});
+	    });
+	</script>
+	    
     <!-- Our JavaScript -->
     <tiles:insertAttribute name="page-js" />
 </body>
