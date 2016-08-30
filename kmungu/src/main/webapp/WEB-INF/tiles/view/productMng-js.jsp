@@ -29,10 +29,6 @@
 	<!-- Parsley -->
     <script src="${res}/vendors/parsleyjs/dist/parsley.min.js"></script>
     <script src="${res}/vendors/parsleyjs/dist/i18n/ko.js"></script>
-	<!-- PNotify -->
-    <script src="${res}/vendors/pnotify/dist/pnotify.js"></script>
-    <script src="${res}/vendors/pnotify/dist/pnotify.buttons.js"></script>
-    <script src="${res}/vendors/pnotify/dist/pnotify.nonblock.js"></script>
 	
     <!-- Custom Theme Scripts -->
     <script src="${res}/js/custom.min.js"></script>
@@ -56,6 +52,9 @@
                     text: '신규 등록',
                     action: function ( e, dt, node, config ) {
                     	$('#kmModal').modal('show');
+                    	$('#kmModal .modal-body').load( "productForm", function() {
+                    		
+	                    });
                     }
                 }
             ],
@@ -100,14 +99,12 @@
         
         oTable.on( 'select', function ( e, dt, type, indexes ) {
             var rowData = oTable.rows( indexes ).data().toArray();
-            //events.prepend( '<div><b>'+type+' selection</b> - '+JSON.stringify( rowData )+'</div>' );
             //alert(JSON.stringify( rowData ));
+            //alert(rowData[0].id);
+            console.log("load product/" + rowData[0].id);
+            
             $('#kmModal').modal('show');
-            $('#kmModal .modal-body').load( "productForm", function() {
-            	  //alert( "Load was performed." );
-            	console.log('loaded productForm.jsp');
-            	initProductForm();
-            });
+            $('#kmModal .modal-body').load( "product/" + rowData[0].id);
         } );
         
         $("#modalSave").click(function(){
@@ -121,8 +118,13 @@
                     return valid;
                 },
                 success: function(response,status){
-                    //성공후 서버에서 받은 데이터 처리
-                    alert("업로드 성공!!");
+                    new PNotify({
+	    	            title: 'Success',
+	    	            text: "정상 등록되었습니다.",
+	    	            delay: 3000,
+	    	            type: 'success',
+	    	            styling: 'bootstrap3'
+	    	        });
                 },
                 error: function(){
                     //에러발생을 위한 code페이지
@@ -130,33 +132,7 @@
             });
    	   	});
         
-        new PNotify({
-            title: "PNotify",
-            type: "info",
-            text: "Welcome. Try hovering over me. You can click things behind me, because I'm non-blocking.",
-            nonblock: {
-                nonblock: true
-            },
-            addclass: 'dark',
-            styling: 'bootstrap3',
-            hide: false,
-            before_close: function(PNotify) {
-              PNotify.update({
-                title: PNotify.options.title + " - Enjoy your Stay",
-                before_close: null
-              });
-
-              PNotify.queueRemove();
-
-              return false;
-            }
-          });
-        	
-        
       });
       
-      function initProductForm() {
-    	  $("#pimgs").fileinput({showCaption: false});
-      }
     </script>
     <!-- /Datatables -->

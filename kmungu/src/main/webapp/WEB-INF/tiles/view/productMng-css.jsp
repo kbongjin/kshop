@@ -14,4 +14,8 @@
     <link href="${res}/vendors/select2/dist/css/select2.min.css" rel="stylesheet">
      -->
     <link href="${res}/vendors/bootstrap-fileinput/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+    <!-- PNotify -->
+    <link href="${res}/vendors/pnotify/dist/pnotify.css" rel="stylesheet">
+    <link href="${res}/vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
+    <link href="${res}/vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
     

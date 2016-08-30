@@ -63,10 +63,7 @@
 	        <h4 class="modal-title" id="kmModalLabel">Modal title</h4>
 	      </div>
 	      <div class="modal-body">
-	      	<div style="text-align: center;">
-		        <i class="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
-				<span>Loading...</span>
-			</div>
+	      	
 	      </div>
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -74,6 +71,10 @@
 	      </div>
 	    </div>
 	  </div>
+	</div>
+	<div class="mdLoading" style="text-align: center; display: none;">
+        <i class="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
+		<span>Loading...</span>
 	</div>
 
     <!-- jQuery -->
@@ -84,21 +85,72 @@
     <script src="${res}/vendors/fastclick/lib/fastclick.js"></script>
     <!-- NProgress -->
     <script src="${res}/vendors/nprogress/nprogress.js"></script>
+    <!-- PNotify -->
+    <script src="${res}/vendors/pnotify/dist/pnotify.js"></script>
+    <script src="${res}/vendors/pnotify/dist/pnotify.buttons.js"></script>
+    <script src="${res}/vendors/pnotify/dist/pnotify.callbacks.js"></script>
     
     <!-- global java script -->
 	<script type="text/javascript">
 	    $( document ).ready(function() {
+	    	
+	    	PNotify.prototype.options.delay = 8000;
+	    	$( document ).ajaxStart(function() {
+	    		NProgress.start();
+	    	});
 	    	$( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
 	    		
 	    		if (jqxhr.responseText == '') {
-	    			alert("서버가 응답하지 않습니다. 서버상태를 확인하세요.");
+	    			new PNotify({
+	    	            title: 'Server Error',
+	    	            text: "서버가 응답하지 않습니다. 서버가 기동중인지 확인하세요.",
+	    	            type: 'error',
+	    	            styling: 'bootstrap3'
+	    	        });
 	    		} else if (jqxhr.status == 401) {
-					alert("로그인 정보가 만료되었습니다. 다시 로그인해주세요.");
-					window.location.href = "index.html";
+
+	    			new PNotify({
+	    	            title: 'Server Error',
+	    	            text: "로그인 정보가 만료되었습니다. 다시 로그인해주세요.",
+	    	            type: 'error',
+	    	            delay: 3000,
+	    	            styling: 'bootstrap3',
+	    	            after_close: function(notice, timer_hide) {
+	    	            	window.location.href = "index.html";
+	    	            }
+	    	        });
+	    		} else if (jqxhr.status == 403) {
+
+	    			new PNotify({
+	    	            title: '접근 권한 없음',
+	    	            text: 'request url : ' + settings.url ,
+	    	            type: 'error',
+	    	            styling: 'bootstrap3'
+	    	        });
+					
+				} else {
+					new PNotify({
+	    	            title: 'Server Error',
+	    	            text: "Error : " + thrownError + " of " + settings.url ,
+	    	            type: 'error',
+	    	            styling: 'bootstrap3'
+	    	        });
 				}
 	    		
-			    //alert( "Error : " + thrownError + " of " + settings.url );
 			});
+	    	
+	    	
+	    	$( document ).ajaxComplete(function( event, xhr, settings ) {
+	    		NProgress.done();
+	    	});
+	    	
+	    	var $mdLoading = $('div.mdLoading');
+	    	$('#kmModal').on('hidden.bs.modal', function (e) {
+	    		$( "#kmModal form" ).replaceWith( $mdLoading );
+	    	});
+	    	$('#kmModal').on('show.bs.modal', function (e) {
+	    		$('#kmModal div.mdLoading').show();
+	    	});
 	    });
 	</script>
 	    

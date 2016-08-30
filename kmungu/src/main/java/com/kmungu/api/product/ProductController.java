@@ -14,6 +14,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,7 +36,7 @@ import com.kmungu.api.product.domain.Product;
  * @author Bong-Jin Kwon
  * @version 1.0
  */
-@RestController
+@Controller
 @RequestMapping("/product")
 public class ProductController {
 
@@ -73,6 +74,7 @@ public class ProductController {
 	}*/
 	
 	@RequestMapping(value="/list", method = RequestMethod.GET)
+	@ResponseBody
 	//public SimpleJsonResponse getList(SimpleJsonResponse jsonRes, @PageableDefault(sort = { "createDt" }, direction = Direction.DESC) Pageable pageable, String search){
 	public DataTablesOutput<Product> getList(@Valid DataTablesInput input){
 	/*
@@ -136,12 +138,14 @@ public class ProductController {
 	}
 	
 	@RequestMapping(value="/{productId}", method = RequestMethod.GET)
-	@ResponseBody
-	public SimpleJsonResponse getProduct(SimpleJsonResponse jsonRes, @PathVariable("productId") Integer productId){
+	public String getProduct(Model model, @PathVariable("productId") Integer productId){
 	
-		jsonRes.setData(service.getProduct(productId));
+		Product product = service.getProduct(productId);
 		
-		return jsonRes;
+		model.addAttribute("product", product);
+		model.addAttribute("categories", service.getCategoryAll());
+		
+		return "productForm";
 	}
 
 }

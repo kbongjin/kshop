@@ -2,6 +2,7 @@ package com.kmungu.api.code;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.kmungu.api.code.domain.CommonCode;
 import com.kmungu.api.code.domain.CommonCodeRepository;
@@ -79,6 +81,33 @@ public class CommonCodeService implements InitializingBean {
 
 		// return (ArrayList)allCodes.get(cd_grp);
 		return codes;
+	}
+	
+	/**
+	 * prefix_cd값으로 시작하는 코드리스트만 가져온다.
+	 * 
+	 * @param cd_grp
+	 * @param prefix_cd		코드 앞글자가 포함된것들만 가져오고싶을때.
+	 * @param except_cds    특정 코드들을 제외하고 싶을때.
+	 * @return
+	 */
+	public List<CommonCode> getCodes(String cd_grp, String except_cds){
+		List<CommonCode> list = getCodes(cd_grp);
+		List<CommonCode> result = new ArrayList<CommonCode>();
+		CommonCode codef = null;
+		if(list != null ){
+			
+			for(Iterator<CommonCode> itr = list.iterator(); itr.hasNext();){
+				codef = (CommonCode)itr.next();
+				if(!StringUtils.isEmpty(except_cds)){
+					if(except_cds.indexOf(codef.getCode()) > -1) continue;
+				}
+				result.add(codef);
+			}
+			
+		}
+		
+		return result;
 	}
 
 	@SuppressWarnings("unchecked")

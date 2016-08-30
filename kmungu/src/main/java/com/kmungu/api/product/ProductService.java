@@ -9,6 +9,8 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
 
+import com.kmungu.api.code.domain.CommonCode;
+import com.kmungu.api.code.domain.CommonCodeRepository;
 import com.kmungu.api.product.domain.Product;
 import com.kmungu.api.product.domain.ProductRepository;
 
@@ -27,6 +29,9 @@ public class ProductService {
 
 	@Autowired
 	private ProductRepository repository;
+	
+	@Autowired
+	private CommonCodeRepository codeRepo;
 	
 	public ProductService() {
 		// TODO Auto-generated constructor stub
@@ -75,6 +80,10 @@ public class ProductService {
 	
 	public void deleteProduct(Integer productId){
 		repository.delete(productId);
+	}
+	
+	public List<CommonCode> getCategoryAll() {
+		return codeRepo.getCategoryAll();
 	}
 
 }
