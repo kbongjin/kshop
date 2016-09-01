@@ -55,8 +55,8 @@
       </div>
     </div>
     <!-- Modal -->
-	<div class="modal fade" id="kmModal" tabindex="-1" role="dialog" aria-labelledby="kmModalLabel">
-	  <div class="modal-dialog modal-lg" role="document">
+	<div class="modal fade" id="kmModal" tabindex="-1" role="dialog" aria-labelledby="kmModalLabel" style="z-index: 99999">
+	  <div class="modal-dialog" role="document" style="width: 1300px;">
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -68,6 +68,8 @@
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 	        <button id="modalSave" type="button" class="btn btn-primary">저장</button>
+	        <button id="modalDel" type="button" class="btn btn-warning" data-toggle="popover" title="확인" data-placement="left" data-trigger="focus"
+	        data-content="삭제하시겠습니까?" style="display: none;">삭제</button>
 	      </div>
 	    </div>
 	  </div>
@@ -81,6 +83,7 @@
     <script src="${res}/vendors/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap -->
     <script src="${res}/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+
     <!-- FastClick -->
     <script src="${res}/vendors/fastclick/lib/fastclick.js"></script>
     <!-- NProgress -->
@@ -92,6 +95,8 @@
     
     <!-- global java script -->
 	<script type="text/javascript">
+		var deleteable = false;
+	
 	    $( document ).ready(function() {
 	    	
 	    	PNotify.prototype.options.delay = 8000;
@@ -100,7 +105,7 @@
 	    	});
 	    	$( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
 	    		
-	    		if (jqxhr.responseText == '') {
+	    		if (jqxhr.responseText == '' || thrownError == '') {
 	    			new PNotify({
 	    	            title: 'Server Error',
 	    	            text: "서버가 응답하지 않습니다. 서버가 기동중인지 확인하세요.",
@@ -140,17 +145,47 @@
 			});
 	    	
 	    	
-	    	$( document ).ajaxComplete(function( event, xhr, settings ) {
+	    	$( document ).ajaxComplete(function( event, jqxhr, settings ) {
+	    		//console.log(xhr.responseText);
+	    		
+	    		var ct = jqxhr.getResponseHeader("content-type") || "";
+	    		
+	    		if (jqxhr.status == 200 && ct.indexOf('json') > -1) {
+	    			var resJson = jQuery.parseJSON(jqxhr.responseText);
+		    		
+		    		if (resJson.success === false) {
+		    			new PNotify({
+		    	            title: '작업 실패',
+		    	            text: resJson.msg ,
+		    	            type: 'error',
+		    	            styling: 'bootstrap3'
+		    	        });
+					}
+				}
+	    		
 	    		NProgress.done();
 	    	});
 	    	
 	    	var $mdLoading = $('div.mdLoading');
 	    	$('#kmModal').on('hidden.bs.modal', function (e) {
 	    		$( "#kmModal form" ).replaceWith( $mdLoading );
+	    		$('#modalDel').hide();
 	    	});
 	    	$('#kmModal').on('show.bs.modal', function (e) {
 	    		$('#kmModal div.mdLoading').show();
 	    	});
+	    	$('#kmModal').on('shown.bs.modal', function (e) {
+	    		$('#kmModal input:visible:first').focus();
+	    	});
+	    	
+	    	$('[data-toggle="popover"]').popover();
+	    	$('#modalDel').on('shown.bs.popover', function () {
+	    		deleteable = true;
+	    	});
+	    	$('#modalDel').on('hidden.bs.popover', function () {
+	    		deleteable = false;
+	    	});
+	    	
 	    });
 	</script>
 	    

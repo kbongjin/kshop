@@ -10,7 +10,7 @@
                         </div>
                       </div>
                       <div class="form-group">
-                        <label class="control-label col-md-2 col-sm-2 col-xs-12">상품가격</label>
+                        <label class="control-label col-md-2 col-sm-2 col-xs-12">판매가/할인율/할인가격</label>
                         <div class="col-md-4 col-sm-4 col-xs-12">
                           <input type="text" name="retailPrice" class="form-control" placeholder="판매원가" required value="${product.retailPrice}">
                         </div>
@@ -25,6 +25,7 @@
                         <label class="control-label col-md-2 col-sm-2 col-xs-12">상품 카테고리</label>
                         <div class="col-md-10 col-sm-10 col-xs-12">
                           <select name="categoryCd" class="select2_group form-control" required >
+                          	<option value="">::선택하세요::</option>
                           <c:forEach var="code" items="${categories}" varStatus="status">
                           	<c:if test="${fn:length(code.code) == 2 }">
                           	<c:if test="${status.index > 0 }"></optgroup></c:if>
@@ -50,7 +51,24 @@
                     </form>
     <script>
       $(document).ready(function() {
-    	  $("#pimgs").fileinput({showCaption: false});
+    	  $("#pimgs").fileinput({
+    		  showCaption: false,
+    		  maxFileCount: 3,
+    	      allowedFileTypes: ["image"],
+    	      maxFileSize: 10240,
+    	      maxFilePreviewSize: 5120,
+    	      showUpload: false
+    		  <c:if test="${product != null }">
+    		  ,initialPreview: ${product.initialPreview},
+              initialPreviewAsData: true,
+              initialPreviewConfig: ${product.initialPreviewConfig},
+              deleteUrl: "product/img/delete",
+              overwriteInitial: false
+              </c:if>
+    	  });
     	  $('#kmModal').find('.modal-title').text('상품입력');
+    	  <c:if test="${product != null }">
+    	  $('#modalDel').show();
+    	  </c:if>
       });
     </script>

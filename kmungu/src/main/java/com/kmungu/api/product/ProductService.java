@@ -1,17 +1,25 @@
 package com.kmungu.api.product;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kmungu.api.code.domain.CommonCode;
 import com.kmungu.api.code.domain.CommonCodeRepository;
 import com.kmungu.api.product.domain.Product;
+import com.kmungu.api.product.domain.ProductImg;
 import com.kmungu.api.product.domain.ProductRepository;
 
 
@@ -33,12 +41,34 @@ public class ProductService {
 	@Autowired
 	private CommonCodeRepository codeRepo;
 	
+	@Autowired
+	private ProductImgService imgService;
+	
+	@Value("${km.upload.location}")
+	private String uploadPath;
+	
 	public ProductService() {
 		// TODO Auto-generated constructor stub
 	}
 	
 	public void save(Product product){
 		repository.save(product);
+	}
+	
+	@Transactional
+	public void saveWithImages(Product product, MultipartFile[] imgFiles){
+		repository.save(product);
+		
+		try{
+			for (int i = 0; i < imgFiles.length; i++) {
+				File uploadedFile = new File(uploadPath + imgFiles[i].getOriginalFilename());
+				imgFiles[i].transferTo(uploadedFile);
+	
+				imgService.save(new ProductImg(product.getId(), imgFiles[i].getOriginalFilename(), imgFiles[i].getSize()));
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public List<Product> getProductAllList(){
@@ -79,6 +109,15 @@ public class ProductService {
 	*/
 	
 	public void deleteProduct(Integer productId){
+		
+		Product p = getProduct(productId);
+		
+		if (p.getProductImgs() != null) {
+			for (ProductImg pImg : p.getProductImgs()) {
+				FileUtils.deleteQuietly(new File(uploadPath + pImg.getImgPath()));
+			}
+		}
+		
 		repository.delete(productId);
 	}
 	

@@ -1,20 +1,23 @@
 package com.kmungu.api.product.domain;
 
-import org.springframework.data.jpa.datatables.repository.DataTablesRepository;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.kmungu.api.product.domain.ProductImg;
+
 /**
- * ProductRepository
+ * ProductImgRepository
  *
  * @author Bongjin Kwon
  * @version 1.0
  */
 @Repository
-public interface ProductRepository extends DataTablesRepository<Product, Integer>{
+public interface ProductImgRepository extends JpaRepository<ProductImg, Integer>, JpaSpecificationExecutor<ProductImg> {
 
 	
 }

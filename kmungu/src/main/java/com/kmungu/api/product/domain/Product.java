@@ -3,19 +3,30 @@
  */
 package com.kmungu.api.product.domain;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
-import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-
-import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.kmungu.api.common.converter.JsonDateSerializer;
+import com.kmungu.api.common.util.JSONUtil;
+import com.kmungu.api.product.ProductController;
+import com.kmungu.api.product.viewmodel.FileInputInitialPreviewConfig;
 
 /**
  * @author Administrator
@@ -60,8 +71,32 @@ public class Product {
 	@Column(name = "category_cd")
 	private String categoryCd;//
 	
-	@Column(name = "create_dt")
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@Column(name = "create_dt", updatable = false)
 	private java.util.Date createDt;//
+	
+	@Transient
+	private String imgUri;
+	
+	@OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
+	@JoinColumn(name = "product_id", insertable = false, updatable = false)
+	private List<ProductImg> productImgs;
+	
+	@JsonIgnore
+	@Transient
+	private List<String> initialPreviews = new ArrayList<String>();
+	
+	@JsonIgnore
+	@Transient
+	private List<FileInputInitialPreviewConfig> initialPreviewConfigs = new ArrayList<FileInputInitialPreviewConfig>();
+	
+	@JsonIgnore
+	@Transient
+	private String initialPreview;
+	
+	@JsonIgnore
+	@Transient
+	private String initialPreviewConfig;
 
 
 	public Product() {
@@ -100,7 +135,12 @@ public class Product {
 	 * @return the img1Path
 	 */
 	public String getImg1Path() {
-		return img1Path;
+		
+		if (productImgs != null && productImgs.size() > 0) {
+			return getImgUri() + productImgs.get(0).getImgPath();
+		}
+		
+		return null;
 	}
 
 	/**
@@ -236,6 +276,57 @@ public class Product {
 		this.createDt = createDt;
 	}
 	
+	public String getImgUri() {
+		return ProductController.IMG_URI;
+	}
+
+	public void setImgUri(String imgUri) {
+		this.imgUri = imgUri;
+	}
+
+	public List<ProductImg> getProductImgs() {
+		return productImgs;
+	}
+
+	public void setProductImgs(List<ProductImg> productImgs) {
+		this.productImgs = productImgs;
+	}
+
+	public List<String> getInitialPreviews() {
+		
+		for (ProductImg pImg : this.productImgs) {
+			initialPreviews.add(getImgUri() + pImg.getImgPath());
+		}
+		
+		return initialPreviews;
+	}
+
+	public List<FileInputInitialPreviewConfig> getInitialPreviewConfigs() {
+		
+		for (ProductImg pImg : this.productImgs) {
+			initialPreviewConfigs.add(new FileInputInitialPreviewConfig(pImg));
+		}
+		
+		return initialPreviewConfigs;
+	}
+
+	public String getInitialPreview() {
+		try{
+			return JSONUtil.objToJson(getInitialPreviews());
+		}catch (IOException e) {
+			return null;
+		}
+	}
+
+	public String getInitialPreviewConfig() {
+		
+		try {
+			return JSONUtil.objToJson(getInitialPreviewConfigs());
+		}catch (IOException e) {
+			return null;
+		}
+	}
+
 	@PrePersist
 	public void preInsert() {
 		this.createDt = new Date();

@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -26,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.kmungu.api.common.model.SimpleJsonResponse;
 import com.kmungu.api.product.domain.Product;
+import com.kmungu.api.product.domain.ProductImg;
 
 
 
@@ -38,9 +40,11 @@ import com.kmungu.api.product.domain.Product;
  */
 @Controller
 @RequestMapping("/product")
-public class ProductController {
+public class ProductController implements InitializingBean{
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
+	
+	public static String IMG_URI;
 	
 	@Autowired
 	private ProductService service;
@@ -48,8 +52,8 @@ public class ProductController {
 	@Autowired
 	private MessageSource messageSource;
 	
-	@Value("${km.upload.location}")
-	private String uploadPath;
+	@Value("${km.product.img.uri}")
+	private String imgUri;
 	
 
 	/**
@@ -92,35 +96,7 @@ public class ProductController {
 	@ResponseBody
 	public SimpleJsonResponse save(SimpleJsonResponse jsonRes, Product product, @RequestParam(name = "imgFiles", required = false) MultipartFile[] imgFiles){
 		
-		try {
-			for (int i = 0; i < imgFiles.length; i++) {
-				File uploadedFile = new File(uploadPath + imgFiles[i].getOriginalFilename());
-				imgFiles[i].transferTo(uploadedFile);
-				
-				if (i == 0) {
-					product.setImg1Path(uploadedFile.getAbsolutePath());
-				} else if (i == 1) {
-					product.setImg2Path(uploadedFile.getAbsolutePath());
-				} else if (i == 2) {
-					product.setImg3Path(uploadedFile.getAbsolutePath());
-				}
-				
-			}
-			
-			//gstarContents.setUrl(videoId);
-			//gstarContents.setLocale(locale.getLanguage());
-			service.save(product);
-			
-		
-		} catch (IOException e) {
-			LOGGER.error(e.toString(), e);
-			jsonRes.setSuccess(false);
-			jsonRes.setMsg("");
-		}
-		
-		
-		//jsonRes.setMsg(messageSource.getMessage("account.email.not.reg", new String[]{userEmail}, locale));
-		
+		service.saveWithImages(product, imgFiles);
 		
 		return jsonRes;
 	}
@@ -140,12 +116,20 @@ public class ProductController {
 	@RequestMapping(value="/{productId}", method = RequestMethod.GET)
 	public String getProduct(Model model, @PathVariable("productId") Integer productId){
 	
-		Product product = service.getProduct(productId);
+		if (productId > 0) {
+			Product product = service.getProduct(productId);
+			
+			//product.setImgUri(imgUri);
+			model.addAttribute("product", product);
+		}
 		
-		model.addAttribute("product", product);
 		model.addAttribute("categories", service.getCategoryAll());
 		
 		return "productForm";
+	}
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		IMG_URI = imgUri;
 	}
 
 }

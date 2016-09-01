@@ -24,7 +24,10 @@
     <script src="${res}/vendors/select2/dist/js/select2.full.min.js"></script>
      -->
     <script src="${res}/js/jquery.form.min.js"></script>
+    
     <!-- the main fileinput plugin file -->
+    <script src="${res}/vendors/bootstrap-fileinput/js/plugins/purify.min.js"></script>
+    <script src="${res}/vendors/bootstrap-fileinput/js/plugins/sortable.min.js"></script>
 	<script src="${res}/vendors/bootstrap-fileinput/js/fileinput.min.js"></script>
 	<!-- Parsley -->
     <script src="${res}/vendors/parsleyjs/dist/parsley.min.js"></script>
@@ -46,13 +49,14 @@
             'serverSide' : true,
             "lengthMenu": [[10, 25, 35, 50], [10, 25, 35, 50]],
             'select': true,
-            dom: 'Bfrtip',
+            "order": [[ 6, "desc" ]],
+            dom: 'Blfrtip',
             buttons: [
                 {
                     text: '신규 등록',
                     action: function ( e, dt, node, config ) {
                     	$('#kmModal').modal('show');
-                    	$('#kmModal .modal-body').load( "productForm", function() {
+                    	$('#kmModal .modal-body').load( "product/0", function() {
                     		
 	                    });
                     }
@@ -61,12 +65,23 @@
             columns : [{
                 data : 'id',
                 visible : true,
-                searchable : false
+                searchable : false,
+                width: "40px"
+            }, {
+                data : 'img1Path',
+                orderable : false,
+                searchable : false,
+                render: function ( data, type, row ) {
+                	if(data) {
+                		return "<img src='"+data+"' width='100px' />";
+                	}
+                    return "없음";
+                }
             }, {
                 data : 'name',
-                "render": function ( data, type, row ) {
+                render: function ( data, type, row ) {
                     return "<a href='#'>" +data +"</a>";
-                },
+                }
             }, {
                 data : 'retailPrice',
                 orderable : false,
@@ -80,12 +95,8 @@
                 orderable : false,
                 searchable : false
             }, {
-                data : 'img1Path',
-                orderable : false,
-                searchable : false
-            }, {
                 data : 'createDt',
-                orderable : false,
+                orderable : true,
                 searchable : false
             }]
         });
@@ -98,7 +109,7 @@
         }); 
         
         oTable.on( 'select', function ( e, dt, type, indexes ) {
-            var rowData = oTable.rows( indexes ).data().toArray();
+            var rowData = dt.rows( indexes ).data().toArray();
             //alert(JSON.stringify( rowData ));
             //alert(rowData[0].id);
             console.log("load product/" + rowData[0].id);
@@ -117,14 +128,21 @@
 					console.log('valid: ' + valid);
                     return valid;
                 },
-                success: function(response,status){
-                    new PNotify({
-	    	            title: 'Success',
-	    	            text: "정상 등록되었습니다.",
-	    	            delay: 3000,
-	    	            type: 'success',
-	    	            styling: 'bootstrap3'
-	    	        });
+                success: function(response, status){
+                	//console.log(response);//response is json.
+                	
+                	oTable.ajax.reload(null, false);
+                	
+                	if (response.success) {
+	                    new PNotify({
+		    	            title: 'Success',
+		    	            text: "정상 등록되었습니다.",
+		    	            delay: 3000,
+		    	            type: 'success',
+		    	            styling: 'bootstrap3'
+		    	        });
+	                    $('#kmModal').modal('hide');
+                	}
                 },
                 error: function(){
                     //에러발생을 위한 code페이지
@@ -132,7 +150,87 @@
             });
    	   	});
         
+        
+        $("#modalDel").click(function(){
+
+			if(deleteable) {
+				$.ajax({
+	    			  method : "DELETE",
+					  url: "product/" + $('#pfrm [name="id"]').val(),
+					  dataType: "json"
+					  
+	    	    }).done(function( responseJson ) {
+	    	    	new PNotify({
+	    	            title: 'Success',
+	    	            text: "정상 삭제되었습니다.",
+	    	            delay: 3000,
+	    	            type: 'success',
+	    	            styling: 'bootstrap3'
+	    	        });
+                    $('#kmModal').modal('hide');
+                    oTable.ajax.reload(null, false);
+  		   		});
+			
+			}
+	        	
+	   	});
+        
+        // ------------ 재고 목록 -----------------
+        $('#datatable2').DataTable({
+        	//'ajax' : 'product/stock/list',
+        	"ajax": {
+        	    "url": "product/stock/list",
+        	    "data": function ( d ) {
+        	      return $.extend( {}, d, {"productId": 1} );
+        	    }
+        	},
+            'processing': true,
+            "language": {
+                "processing": "데이타 조회중..."
+             },
+            'serverSide' : true,
+        	dom: 'Blfrtip',
+            buttons: [
+                {
+                    text: '재고 입력',
+                    action: function ( e, dt, node, config ) {
+                    	$('#kmModal').modal('show');
+                    	$('#kmModal .modal-body').load( "product/0", function() {
+                    		
+	                    });
+                    }
+                }
+            ],
+            "search": {
+                "productId": 1
+            },
+            columns : [{
+                data : 'id',
+                visible : true,
+                searchable : false,
+                width: "40px",
+            }, {
+                data : 'unitPrice',
+                orderable : false,
+                searchable : false
+            }, {
+                data : 'qty',
+                orderable : false,
+                searchable : false
+            }, {
+                data : 'sumPrice',
+                orderable : false,
+                searchable : false
+            }, {
+                data : 'stockDt',
+                orderable : true,
+                searchable : false
+            }]
+        });
+        
+        
       });
+      
       
     </script>
     <!-- /Datatables -->

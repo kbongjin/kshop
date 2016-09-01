@@ -1090,9 +1090,13 @@ table.jambo_table tbody tr.selected td {
   font-size: 14px;
   background-color: white; }
 
+.dt-buttons {
+	float: left;
+}
 .dataTables_length {
-  width: 40%;
-  float: left; }
+  /*width: 40%;*/
+  margin-left: 15px;
+  float: right; }
 
 .dataTables_filter {
   width: 50%;
