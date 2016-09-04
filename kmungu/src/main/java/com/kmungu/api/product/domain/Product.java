@@ -71,6 +71,9 @@ public class Product {
 	@Column(name = "category_cd")
 	private String categoryCd;//
 	
+	@Column(name = "stock_qty")
+	private int stockQty; // 재고 수량.
+	
 	@JsonSerialize(using = JsonDateSerializer.class)
 	@Column(name = "create_dt", updatable = false)
 	private java.util.Date createDt;//
@@ -260,6 +263,14 @@ public class Product {
 	 */
 	public void setCategoryCd(String categoryCd) {
 		this.categoryCd = categoryCd;
+	}
+
+	public int getStockQty() {
+		return stockQty;
+	}
+
+	public void setStockQty(int stockQty) {
+		this.stockQty = stockQty;
 	}
 
 	/**

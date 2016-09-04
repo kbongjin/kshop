@@ -14,6 +14,9 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.kmungu.api.common.converter.JsonDateSerializer;
+
 /**
  * @author Administrator
  *
@@ -34,11 +37,22 @@ public class ProductStock {
 	private int unitPrice;//단가(입고원가격)
 	
 	@Column(name = "qty")
-	private String qty;//입고수량
+	private int qty;//입고수량
 	
 	@Transient
-	private int sumPrice;
+	private int sumPrice;// unitPrice * qty
 	
+	@Column(name = "stock_qty")
+	private int stockQty;
+	
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@Column(name = "update_dt")
+	private Date updateDt;
+	
+	@Column(name = "update_user_id")
+	private Long updateUserId;
+	
+	@JsonSerialize(using = JsonDateSerializer.class)
 	@Column(name = "stock_dt", updatable = false)
 	private java.util.Date stockDt;//입고일시
 
@@ -94,19 +108,19 @@ public class ProductStock {
 	/**
 	 * @return the qty
 	 */
-	public String getQty() {
+	public int getQty() {
 		return qty;
 	}
 
 	/**
 	 * @param qty the qty to set
 	 */
-	public void setQty(String qty) {
+	public void setQty(int qty) {
 		this.qty = qty;
 	}
 
 	public int getSumPrice() {
-		return sumPrice;
+		return qty * unitPrice;
 	}
 
 	public void setSumPrice(int sumPrice) {
@@ -127,9 +141,34 @@ public class ProductStock {
 		this.stockDt = stockDt;
 	}
 	
+	public int getStockQty() {
+		return stockQty;
+	}
+
+	public void setStockQty(int stockQty) {
+		this.stockQty = stockQty;
+	}
+
+	public Date getUpdateDt() {
+		return updateDt;
+	}
+
+	public void setUpdateDt(Date updateDt) {
+		this.updateDt = updateDt;
+	}
+
+	public Long getUpdateUserId() {
+		return updateUserId;
+	}
+
+	public void setUpdateUserId(Long updateUserId) {
+		this.updateUserId = updateUserId;
+	}
+
 	@PrePersist
 	public void preInsert() {
 		this.stockDt = new Date();
+		this.updateDt = this.stockDt;
 	}
 
 }

@@ -16,6 +16,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -85,12 +86,16 @@ public class ProductStockController {
 	}
 	
 	@RequestMapping(value="/{productStockId}", method = RequestMethod.GET)
-	@ResponseBody
-	public SimpleJsonResponse getProductStock(SimpleJsonResponse jsonRes, @PathVariable("productStockId") Integer productStockId){
+	public String getProductStock(Model model, @PathVariable("productStockId") Integer productStockId){
 	
-		jsonRes.setData(service.getProductStock(productStockId));
+		if (productStockId != null && productStockId > 0) {
+			
+			ProductStock stock = service.getProductStock(productStockId);
+			model.addAttribute("stock", stock);
+		}
 		
-		return jsonRes;
+		
+		return "productStockForm";
 	}
 
 }

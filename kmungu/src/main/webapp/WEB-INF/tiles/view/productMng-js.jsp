@@ -80,7 +80,7 @@
             }, {
                 data : 'name',
                 render: function ( data, type, row ) {
-                    return "<a href='#'>" +data +"</a>";
+                    return "<a href='javascript:loadProduct("+row.id+")' class=''>" +data +"</a>";
                 }
             }, {
                 data : 'retailPrice',
@@ -93,11 +93,19 @@
             }, {
                 data : 'sellingPrice',
                 orderable : false,
-                searchable : false
+                searchable : false,
             }, {
                 data : 'createDt',
                 orderable : true,
                 searchable : false
+            }, {
+            	
+            	data : 'stockQty',
+                orderable : true,
+                searchable : false,
+                render: function ( data, type, row ) {
+                    return '<a class="btn btn-primary btn-sm stock" href="javascript:loadStocks('+row.id+')" role="button">재고관리 <span class="badge">'+data+'</span></a>';
+                }
             }]
         });
         
@@ -107,16 +115,6 @@
              oTable.search(this.value).draw();   
          }
         }); 
-        
-        oTable.on( 'select', function ( e, dt, type, indexes ) {
-            var rowData = dt.rows( indexes ).data().toArray();
-            //alert(JSON.stringify( rowData ));
-            //alert(rowData[0].id);
-            console.log("load product/" + rowData[0].id);
-            
-            $('#kmModal').modal('show');
-            $('#kmModal .modal-body').load( "product/" + rowData[0].id);
-        } );
         
         $("#modalSave").click(function(){
    	   		//alert("click!! btnReg");
@@ -175,13 +173,24 @@
 	        	
 	   	});
         
-        // ------------ 재고 목록 -----------------
-        $('#datatable2').DataTable({
+        $('#datatable').on( 'draw.dt', function () {
+            console.log( 'Redraw occurred at: '+new Date().getTime() );
+            
+            $("a.stock").on('click', function(e){
+            	
+            	var offset = $("div.stock").offset();
+                $('html, body').animate({scrollTop : offset.top}, 400);
+            });
+        } );
+        
+        
+     	// ------------ 재고 목록 -----------------
+        sTable = $('#datatable2').DataTable({
         	//'ajax' : 'product/stock/list',
         	"ajax": {
         	    "url": "product/stock/list",
         	    "data": function ( d ) {
-        	      return $.extend( {}, d, {"productId": 1} );
+        	      return $.extend( {}, d, {"productId": productId} );
         	    }
         	},
             'processing': true,
@@ -195,7 +204,7 @@
                     text: '재고 입력',
                     action: function ( e, dt, node, config ) {
                     	$('#kmModal').modal('show');
-                    	$('#kmModal .modal-body').load( "product/0", function() {
+                    	$('#kmModal .modal-body').load( "product/stock/0", function() {
                     		
 	                    });
                     }
@@ -222,15 +231,59 @@
                 orderable : false,
                 searchable : false
             }, {
+                data : 'stockQty',
+                orderable : false,
+                searchable : false
+            }, {
                 data : 'stockDt',
                 orderable : true,
                 searchable : false
-            }]
+            }, {
+                data : 'updateDt',
+                orderable : false,
+                searchable : false
+            }],
+            footerCallback: function ( row, data, start, end, display ) {
+                var api = this.api(), data;
+     
+                // Remove the formatting to get integer data for summation
+                var intVal = function ( i ) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '')*1 :
+                        typeof i === 'number' ?
+                            i : 0;
+                };
+         
+                // Total over this page
+                pageTotal = api
+                    .column( 3, { page: 'current'} )
+                    .data()
+                    .reduce( function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0 );
+     
+                // Update footer
+                $( api.column( 3 ).footer() ).html(
+                    '$'+pageTotal 
+                );
+            }
         });
         
         
       });
       
+      var productId = 0;
+      var sTable = {};
+      function loadProduct(pId) {
+    	  $('#kmModal').modal('show');
+          $('#kmModal .modal-body').load( "product/" + pId);
+      }
+      
+      function loadStocks(pId) {
+    	  //alert(pId);
+    	  productId = pId;
+    	  sTable.ajax.reload(null, false);
+      }
       
     </script>
     <!-- /Datatables -->
