@@ -25,7 +25,7 @@
     <link href="${res}/css/custom.css" rel="stylesheet">
     <style type="text/css">
     div.dataTables_processing {padding: 4px 0 !important;}
-    
+    select.ctg2 {margin-right: 30px;}
     </style>
   </head>
 

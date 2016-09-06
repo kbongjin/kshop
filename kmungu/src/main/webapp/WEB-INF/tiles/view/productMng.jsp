@@ -6,14 +6,7 @@
               </div>
 
               <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for...">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">Go!</button>
-                    </span>
-                  </div>
-                </div>
+                
               </div>
             </div>
 
@@ -49,12 +42,13 @@
                       <thead>
                         <tr>
                           <th>id</th>
-                          <th>img1_path</th>
-                          <th>name</th>
+                          <th>이미지</th>
+                          <th>상품명</th>
                           <th>판매원가</th>
                           <th>할인가격</th>
                           <th>판매가격</th>
                           <th>등록일시</th>
+                          <th>상품설명</th>
                           <th>재고관리</th>
                         </tr>
                       </thead>
@@ -95,7 +89,7 @@
                         <tr>
                           <th>id</th>
                           <th>단가</th>
-                          <th>수량</th>
+                          <th>입고수량</th>
                           <th>총금액</th>
                           <th>재고수량</th>
                           <th>입고일시</th>

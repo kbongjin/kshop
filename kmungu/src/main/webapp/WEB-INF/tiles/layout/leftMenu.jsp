@@ -2,7 +2,7 @@
     	<div class="col-md-3 left_col menu_fixed">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="dashboard" class="site_title"><i class="fa fa-envira"></i> <span>K문구 관리자페이지</span></a>
+              <a href="dashboard" class="site_title"><i class="fa fa-envira"></i> <span>Gentelella<!-- K문구 관리자페이지  --></span></a>
             </div>
 
             <div class="clearfix"></div>

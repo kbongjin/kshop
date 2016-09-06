@@ -38,10 +38,20 @@
 
     <!-- Datatables -->
     <script>
+    
+      var oTable = {};
+      var sTable = {};
+      var FormOptions = {};
+      
       $(document).ready(function() {
     	  
-        var oTable = $('#datatable').DataTable({
-            'ajax' : 'product/list',
+        oTable = $('#datatable').DataTable({
+            "ajax": {
+        	    "url": "product/list",
+        	    "data": function ( d ) {
+        	      return $.extend( {}, d, {"ctg1": $("select.ctg1").val(), "ctg2": $("select.ctg2").val()} );
+        	    }
+        	},
             'processing': true,
             "language": {
                 "processing": "데이타 조회중..."
@@ -59,6 +69,12 @@
                     	$('#kmModal .modal-body').load( "product/0", function() {
                     		
 	                    });
+                    }
+                },
+                {
+                    text: 'Reload',
+                    action: function ( e, dt, node, config ) {
+                    	dt.ajax.reload(null, false);
                     }
                 }
             ],
@@ -98,6 +114,12 @@
                 data : 'createDt',
                 orderable : true,
                 searchable : false
+			}, {
+                orderable : false,
+                searchable : false,
+                render: function ( data, type, row ) {
+                    return '<a class="btn btn-primary btn-sm pdetail" href="javascript:loadDetail('+row.id+')" role="button">상품설명</a>';
+                }
             }, {
             	
             	data : 'stockQty',
@@ -106,7 +128,11 @@
                 render: function ( data, type, row ) {
                     return '<a class="btn btn-primary btn-sm stock" href="javascript:loadStocks('+row.id+')" role="button">재고관리 <span class="badge">'+data+'</span></a>';
                 }
-            }]
+            }],
+            initComplete: function () {
+
+            	drawCategorySelect();
+            }
         });
         
         $('#datatable_filter input').unbind();
@@ -116,45 +142,60 @@
          }
         }); 
         
-        $("#modalSave").click(function(){
-   	   		//alert("click!! btnReg");
-        	$('#pfrm').parsley().validate();
-        	
-        	$('#pfrm').ajaxSubmit({
-                beforeSubmit: function (data,form,option) {
-					var valid = $('#pfrm').parsley().isValid();
-					console.log('valid: ' + valid);
-                    return valid;
-                },
-                success: function(response, status){
-                	//console.log(response);//response is json.
-                	
-                	oTable.ajax.reload(null, false);
-                	
-                	if (response.success) {
-	                    new PNotify({
-		    	            title: 'Success',
-		    	            text: "정상 등록되었습니다.",
-		    	            delay: 3000,
-		    	            type: 'success',
-		    	            styling: 'bootstrap3'
-		    	        });
-	                    $('#kmModal').modal('hide');
-                	}
-                },
-                error: function(){
-                    //에러발생을 위한 code페이지
-                }                               
+        $('#datatable').on( 'draw.dt', function () {
+            console.log( 'Redraw occurred at: '+new Date().getTime() );
+            
+            $("a.stock").on('click', function(e){
+            	
+            	var offset = $("div.stock").offset();
+                $('html, body').animate({scrollTop : offset.top}, 400);
             });
-   	   	});
+            
+            if (productId > 0) {
+            	productId = 0;
+                sTable.ajax.reload(null, false);
+			}
+        } );
         
-        
+        $("#modalSave").click(function(){
+ 	   		//alert("click!! btnReg");
+	      	$('form.pfrm').parsley().validate();
+	      	
+	      	$('form.pfrm').ajaxSubmit({
+	              beforeSubmit: function (data,form,option) {
+						var valid = $('form.pfrm').parsley().isValid();
+						console.log('valid: ' + valid);
+	                  	return valid;
+	              },
+	              success: function(response, status){
+	              	//console.log(response);//response is json.
+	              	
+	              	FormOptions.reloadTable(null, false);
+	              	
+	              	if (response.success) {
+		                    new PNotify({
+			    	            title: 'Success',
+			    	            text: "정상 등록되었습니다.",
+			    	            delay: 3000,
+			    	            type: 'success',
+			    	            styling: 'bootstrap3'
+			    	        });
+		                    $('#kmModal').modal('hide');
+	              	}
+	              },
+	              error: function(){
+	                  //에러발생을 위한 code페이지
+	              }                               
+	        });
+ 	   	});
+      
         $("#modalDel").click(function(){
 
 			if(deleteable) {
 				$.ajax({
 	    			  method : "DELETE",
-					  url: "product/" + $('#pfrm [name="id"]').val(),
+					  //url: "product/" + $('#pfrm [name="id"]').val(),
+					  url: FormOptions.getDeleteUrl(),
 					  dataType: "json"
 					  
 	    	    }).done(function( responseJson ) {
@@ -165,23 +206,12 @@
 	    	            type: 'success',
 	    	            styling: 'bootstrap3'
 	    	        });
-                    $('#kmModal').modal('hide');
-                    oTable.ajax.reload(null, false);
-  		   		});
+                  	$('#kmModal').modal('hide');
+                  	FormOptions.reloadTable(null, false);
+		   		});
 			
 			}
-	        	
 	   	});
-        
-        $('#datatable').on( 'draw.dt', function () {
-            console.log( 'Redraw occurred at: '+new Date().getTime() );
-            
-            $("a.stock").on('click', function(e){
-            	
-            	var offset = $("div.stock").offset();
-                $('html, body').animate({scrollTop : offset.top}, 400);
-            });
-        } );
         
         
      	// ------------ 재고 목록 -----------------
@@ -198,21 +228,30 @@
                 "processing": "데이타 조회중..."
              },
             'serverSide' : true,
-        	dom: 'Blfrtip',
+            'select' : true,
+        	dom: 'Blrtip',
             buttons: [
                 {
                     text: '재고 입력',
                     action: function ( e, dt, node, config ) {
+                    	
+                    	if ( productId === 0 ) {
+                    		new PNotify({
+        	    	            title: '주의',
+        	    	            text: '먼저 상품의 재고관리 버턴을 클릭하세요.',
+        	    	            delay: 3000,
+        	    	            styling: 'bootstrap3'
+        	    	        });
+                    		return;
+                    	}
+                    	
                     	$('#kmModal').modal('show');
-                    	$('#kmModal .modal-body').load( "product/stock/0", function() {
+                    	$('#kmModal .modal-body').load( "product/stock/0?productId=" + productId, function() {
                     		
 	                    });
                     }
                 }
             ],
-            "search": {
-                "productId": 1
-            },
             columns : [{
                 data : 'id',
                 visible : true,
@@ -268,12 +307,21 @@
                 );
             }
         });
+     	
+        sTable.on( 'select', function ( e, dt, type, indexes ) {
+            var rowData = dt.rows( indexes ).data().toArray();
+            //alert(JSON.stringify( rowData ));
+            //alert(rowData[0].id);
+            
+            $('#kmModal').modal('show');
+            $('#kmModal .modal-body').load( "product/stock/"+ rowData[0].id );
+        } );
         
         
       });
       
       var productId = 0;
-      var sTable = {};
+      
       function loadProduct(pId) {
     	  $('#kmModal').modal('show');
           $('#kmModal .modal-body').load( "product/" + pId);
@@ -283,6 +331,47 @@
     	  //alert(pId);
     	  productId = pId;
     	  sTable.ajax.reload(null, false);
+      }
+      
+      function drawCategorySelect() {
+    	  
+    	  $('<label>카테고리: <select name="ctg1" class="form-control input-sm ctg1"><option value="">::대분류(전체)::</option></select> </lable>' 
+    			  + '<select name="ctg2" class="form-control input-sm ctg2"><option value="">::중분류(전체)::</option></select>')
+          .prependTo( '#datatable_filter' );
+    	  
+    	  $.getJSON( "code/list/p_categoryA", function( data ) {
+    		  
+    		  $.each( data, function( index, code ) {
+    		    $( "<option value='" + code.code + "'>" + code.codeNm + "</option>" ).appendTo("select.ctg1");
+    		  });
+    		  /*
+    		  $( "<ul/>", {
+    		    "class": "my-new-list",
+    		    html: items.join( "" )
+    		  }).appendTo( "body" );
+    		  */
+    	  });
+    	  
+    	  $("select.ctg1").on('change', function(e){
+    		  //var optionSelected = $("option:selected", this);
+    		  //var valueSelected = this.value;
+    		  $("select.ctg2").empty();// clear.
+    		  $('<option value="">::중분류(전체)::</option>').appendTo("select.ctg2");
+    		  
+    		  oTable.ajax.reload(null, true);
+    		  
+    		  if (this.value || this.value.length > 0) {
+	    		  $.getJSON( "code/list/p_category" + this.value, function( data ) {
+	        		  
+	        		  $.each( data, function( index, code ) {
+	        		    $( "<option value='" + code.code + "'>" + code.codeNm + "</option>" ).appendTo("select.ctg2");
+	        		  });
+	        		 
+	        	  });
+    		  }
+    		  
+    	  });
+          
       }
       
     </script>

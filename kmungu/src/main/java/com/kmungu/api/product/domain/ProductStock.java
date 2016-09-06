@@ -11,11 +11,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.kmungu.api.common.converter.JsonDateSerializer;
+import com.kmungu.api.common.util.WebUtil;
 
 /**
  * @author Administrator
@@ -28,7 +30,7 @@ public class ProductStock {
 	@Column(name = "id")
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;//
+	private Integer id;//
 	
 	@Column(name = "product_id")
 	private int productId;//
@@ -66,14 +68,14 @@ public class ProductStock {
 	/**
 	 * @return the id
 	 */
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -169,6 +171,13 @@ public class ProductStock {
 	public void preInsert() {
 		this.stockDt = new Date();
 		this.updateDt = this.stockDt;
+		this.updateUserId = WebUtil.getLoginUserId();
+	}
+	
+	@PreUpdate
+	public void preUpdate() {
+		this.updateDt = new Date();
+		this.updateUserId = WebUtil.getLoginUserId();
 	}
 
 }

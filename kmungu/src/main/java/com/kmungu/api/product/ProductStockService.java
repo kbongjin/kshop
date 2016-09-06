@@ -2,6 +2,8 @@ package com.kmungu.api.product;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 
+import com.kmungu.api.product.domain.ProductRepository;
 import com.kmungu.api.product.domain.ProductStock;
 import com.kmungu.api.product.domain.ProductStockRepository;
 import com.kmungu.api.product.spec.ProductStockSpecs;
@@ -32,12 +35,18 @@ public class ProductStockService {
 	@Autowired
 	private ProductStockRepository repository;
 	
+	@Autowired
+	private ProductRepository productRepo;
+	
 	public ProductStockService() {
 		// TODO Auto-generated constructor stub
 	}
 	
+	@Transactional
 	public void save(ProductStock productStock){
 		repository.save(productStock);
+		
+		productRepo.updateProductStockQty(productStock.getProductId());
 	}
 	
 	public List<ProductStock> getProductStockAllList(){
@@ -63,8 +72,14 @@ public class ProductStockService {
 	}
 	*/
 	
+	@Transactional
 	public void deleteProductStock(Integer productStockId){
+		
+		ProductStock stock = getProductStock(productStockId);
+		
 		repository.delete(productStockId);
+		
+		productRepo.updateProductStockQty(stock.getProductId());
 	}
 
 }

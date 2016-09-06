@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<form id="pfrm" action="product" method="POST" data-parsley-validate class="form-horizontal form-label-left" enctype="multipart/form-data">
+<form action="product" method="POST" data-parsley-validate class="form-horizontal form-label-left pfrm" enctype="multipart/form-data">
 					  <input type="hidden" name="id" value="${product.id}"/>
                       <div class="form-group">
                         <label class="control-label col-md-2 col-sm-2 col-xs-12">상품명</label>
@@ -57,18 +57,30 @@
     	      allowedFileTypes: ["image"],
     	      maxFileSize: 10240,
     	      maxFilePreviewSize: 5120,
-    	      showUpload: false
+    	      
     		  <c:if test="${product != null }">
-    		  ,initialPreview: ${product.initialPreview},
+    		  initialPreview: ${product.initialPreview},
               initialPreviewAsData: true,
               initialPreviewConfig: ${product.initialPreviewConfig},
               deleteUrl: "product/img/delete",
-              overwriteInitial: false
+              overwriteInitial: false,
               </c:if>
+              
+              showUpload: false
     	  });
     	  $('#kmModal').find('.modal-title').text('상품입력');
     	  <c:if test="${product != null }">
     	  $('#modalDel').show();
     	  </c:if>
+    	  
+    	  FormOptions = {
+    			getDeleteUrl : function(){
+    		  		return "product/" + $('form.pfrm [name="id"]').val();
+    	  		},
+    	  		reloadTable : function(callback, resetPaging){
+    	  			oTable.ajax.reload(callback, resetPaging);
+    	  		}
+    	  };
+    	  
       });
     </script>

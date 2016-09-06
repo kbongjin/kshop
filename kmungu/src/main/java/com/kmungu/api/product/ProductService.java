@@ -3,6 +3,7 @@ package com.kmungu.api.product;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 import javax.transaction.Transactional;
 
@@ -13,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kmungu.api.code.domain.CommonCode;
@@ -21,6 +24,9 @@ import com.kmungu.api.code.domain.CommonCodeRepository;
 import com.kmungu.api.product.domain.Product;
 import com.kmungu.api.product.domain.ProductImg;
 import com.kmungu.api.product.domain.ProductRepository;
+import com.kmungu.api.product.domain.ProductStock;
+import com.kmungu.api.product.spec.ProductSpecs;
+import com.kmungu.api.product.spec.ProductStockSpecs;
 
 
 /**
@@ -34,6 +40,7 @@ import com.kmungu.api.product.domain.ProductRepository;
 public class ProductService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProductService.class);
+	private static final String[] IMG_DIRS = new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o"};
 
 	@Autowired
 	private ProductRepository repository;
@@ -71,22 +78,44 @@ public class ProductService {
 		}
 	}
 	
+	public String saveProductContentsImage(MultipartFile imgFile) {
+		
+		Random random = new Random();
+		
+		String fileName = IMG_DIRS[random.nextInt(IMG_DIRS.length)] + "/" + imgFile.getOriginalFilename();
+		
+		File uploadedFile = new File(uploadPath + fileName);
+		
+		try{
+			if (uploadedFile.getParentFile().exists() == false) {
+				uploadedFile.getParentFile().mkdirs();
+			}
+			
+			imgFile.transferTo(uploadedFile);
+			
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return fileName;
+	}
+	
 	public List<Product> getProductAllList(){
 		return (List)repository.findAll();
 	}
 	
 	//public Page<Product> getProductList(Pageable pageable, String search){
-	public DataTablesOutput<Product> getProductList(DataTablesInput input){
+	public DataTablesOutput<Product> getProductList(DataTablesInput input, String ctg1, String ctg2){
 	
-		/*
-		Specifications<Product> spec = Specifications.where(ProductSpecs.notBattle()).and(ProductSpecs.notDeteled());
-		
-		if (search != null) {
-			spec = spec.and(ProductSpecs.search(search));
+		Specifications<Product> spec = null;
+		if (StringUtils.isEmpty(ctg2) == false) {
+			spec = Specifications.where(ProductSpecs.eqCtg2(ctg2));
+		} else if (StringUtils.isEmpty(ctg1) == false) {
+			spec = Specifications.where(ProductSpecs.likeCtg1(ctg1));
 		}
 		
-		return repository.findAll(spec, pageable);
-		*/
+		if (spec != null) {
+			return repository.findAll(input, spec);
+		}
 		
 		return repository.findAll(input);
 	}

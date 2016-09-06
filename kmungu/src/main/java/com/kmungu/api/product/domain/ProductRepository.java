@@ -16,5 +16,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductRepository extends DataTablesRepository<Product, Integer>{
 
+	@Modifying
+	@Query(value = "update Product g set g.stockQty = (select sum(s.stockQty) from ProductStock s where s.productId = ?1) where g.id = ?1")
+	int updateProductStockQty(Integer productId);
 	
 }

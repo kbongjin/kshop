@@ -45,6 +45,9 @@ public class ProductStockController {
 	private ProductStockService service;
 	
 	@Autowired
+	private ProductService pService;
+	
+	@Autowired
 	private MessageSource messageSource;
 	
 
@@ -86,12 +89,18 @@ public class ProductStockController {
 	}
 	
 	@RequestMapping(value="/{productStockId}", method = RequestMethod.GET)
-	public String getProductStock(Model model, @PathVariable("productStockId") Integer productStockId){
+	public String getProductStock(Model model, @PathVariable("productStockId") Integer productStockId, Integer productId){
 	
 		if (productStockId != null && productStockId > 0) {
 			
 			ProductStock stock = service.getProductStock(productStockId);
+			
+			model.addAttribute("product", pService.getProduct(stock.getProductId()));
 			model.addAttribute("stock", stock);
+			model.addAttribute("productId", stock.getProductId());
+		} else {
+			model.addAttribute("product", pService.getProduct(productId));
+			model.addAttribute("productId", productId);
 		}
 		
 		

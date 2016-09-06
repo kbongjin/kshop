@@ -42,15 +42,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers(
 				"/", 
-				"/*.html", 
+				"/*.html",
 				"/resources/**", 
 				"/WEB-INF/**", 
-
 				
 				"/auth/notLogin*", 
 				"/auth/loginFail*",
 				"/auth/accessDenied*", 
-				"/auth/onAfterLogout*");
+				"/auth/onAfterLogout*",
+				"/product/ckeditorImageUpload");
 	}
 
 	@Override

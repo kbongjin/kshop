@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -25,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.kmungu.api.common.converter.JsonDateSerializer;
 import com.kmungu.api.common.util.JSONUtil;
+import com.kmungu.api.common.util.WebUtil;
 import com.kmungu.api.product.ProductController;
 import com.kmungu.api.product.viewmodel.FileInputInitialPreviewConfig;
 
@@ -77,6 +79,13 @@ public class Product {
 	@JsonSerialize(using = JsonDateSerializer.class)
 	@Column(name = "create_dt", updatable = false)
 	private java.util.Date createDt;//
+	
+	@JsonSerialize(using = JsonDateSerializer.class)
+	@Column(name = "update_dt")
+	private Date updateDt;
+	
+	@Column(name = "update_user_id")
+	private Long updateUserId;
 	
 	@Transient
 	private String imgUri;
@@ -338,9 +347,33 @@ public class Product {
 		}
 	}
 
+	public Date getUpdateDt() {
+		return updateDt;
+	}
+
+	public void setUpdateDt(Date updateDt) {
+		this.updateDt = updateDt;
+	}
+
+	public Long getUpdateUserId() {
+		return updateUserId;
+	}
+
+	public void setUpdateUserId(Long updateUserId) {
+		this.updateUserId = updateUserId;
+	}
+	
 	@PrePersist
 	public void preInsert() {
 		this.createDt = new Date();
+		this.updateDt = this.createDt;
+		this.updateUserId = WebUtil.getLoginUserId();
+	}
+	
+	@PreUpdate
+	public void preUpdate() {
+		this.updateDt = new Date();
+		this.updateUserId = WebUtil.getLoginUserId();
 	}
 
 }
