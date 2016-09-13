@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <form action="product" method="POST" data-parsley-validate class="form-horizontal form-label-left pfrm" enctype="multipart/form-data">
 					  <input type="hidden" name="id" value="${product.id}"/>
+					  <input type="hidden" name="stockQty" value="${product.stockQty}"/>
                       <div class="form-group">
                         <label class="control-label col-md-2 col-sm-2 col-xs-12">상품명</label>
                         <div class="col-md-10 col-sm-10 col-xs-12">
@@ -73,14 +74,14 @@
     	  $('#modalDel').show();
     	  </c:if>
     	  
-    	  FormOptions = {
-    			getDeleteUrl : function(){
-    		  		return "product/" + $('form.pfrm [name="id"]').val();
-    	  		},
-    	  		reloadTable : function(callback, resetPaging){
-    	  			oTable.ajax.reload(callback, resetPaging);
-    	  		}
-    	  };
+    	  $.extend( FormOptions, {
+	  			getDeleteUrl : function(){
+			  		return "product/" + $('form.pfrm [name="id"]').val();
+		  		},
+		  		reloadTable : function(callback, resetPaging){
+		  			oTable.ajax.reload(callback, resetPaging);
+		  		}
+		  } );
     	  
       });
     </script>

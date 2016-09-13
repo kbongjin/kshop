@@ -46,6 +46,13 @@
                       <li><a href="tables_dynamic.html">00 이벤트</a></li>
                     </ul>
                   </li>
+                  <li><a><i class="fa fa-desktop"></i> 게시판 관리 <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="general_elements.html">공지사항</a></li>
+                      <li><a href="media_gallery.html">FAQ</a></li>
+                      <li><a href="media_gallery.html">사용자문의</a></li>
+                    </ul>
+                  </li>
                   <li><a><i class="fa fa-desktop"></i> 회원/관리자 관리 <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="general_elements.html">회원 관리</a></li>

@@ -41,7 +41,9 @@
     
       var oTable = {};
       var sTable = {};
-      var FormOptions = {};
+      var FormOptions = {
+    		beforeSubmit : function() {console.log('beforeSubmit');}
+      };
       
       $(document).ready(function() {
     	  
@@ -118,7 +120,7 @@
                 orderable : false,
                 searchable : false,
                 render: function ( data, type, row ) {
-                    return '<a class="btn btn-primary btn-sm pdetail" href="javascript:loadDetail('+row.id+')" role="button">상품설명</a>';
+                    return '<a class="btn btn-primary btn-sm pdetail" href="javascript:loadContents('+row.id+')" role="button">상품설명</a>';
                 }
             }, {
             	
@@ -159,13 +161,13 @@
         
         $("#modalSave").click(function(){
  	   		//alert("click!! btnReg");
+ 	   		FormOptions.beforeSubmit();
 	      	$('form.pfrm').parsley().validate();
 	      	
 	      	$('form.pfrm').ajaxSubmit({
 	              beforeSubmit: function (data,form,option) {
-						var valid = $('form.pfrm').parsley().isValid();
-						console.log('valid: ' + valid);
-	                  	return valid;
+						
+	                  return $('form.pfrm').parsley().isValid();
 	              },
 	              success: function(response, status){
 	              	//console.log(response);//response is json.
@@ -325,6 +327,11 @@
       function loadProduct(pId) {
     	  $('#kmModal').modal('show');
           $('#kmModal .modal-body').load( "product/" + pId);
+      }
+      
+      function loadContents(pId) {
+    	  $('#kmModal').modal('show');
+          $('#kmModal .modal-body').load( "product/" + pId + "/editor");
       }
       
       function loadStocks(pId) {

@@ -54,8 +54,8 @@
 	      <!-- /footer content -->
       </div>
     </div>
-    <!-- Modal -->
-	<div class="modal fade" id="kmModal" tabindex="-1" role="dialog" aria-labelledby="kmModalLabel" style="z-index: 99999">
+    <!-- Modal style="z-index: 99999" -->
+	<div class="modal fade" id="kmModal" tabindex="-1" role="dialog" aria-labelledby="kmModalLabel" >
 	  <div class="modal-dialog" role="document" style="width: 1300px;">
 	    <div class="modal-content">
 	      <div class="modal-header">
@@ -95,6 +95,8 @@
     
     <!-- global java script -->
 	<script type="text/javascript">
+	
+		var contextPath = '${pageContext.request.contextPath}';
 		var deleteable = false;
 	
 	    $( document ).ready(function() {

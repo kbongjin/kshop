@@ -182,6 +182,29 @@ public class ProductController implements InitializingBean{
         }
 
 	}
+	
+	@RequestMapping(value="/{productId}/editor", method = RequestMethod.GET)
+	public String getProductContentsEditor(Model model, @PathVariable("productId") Integer productId){
+	
+		Product product = service.getProduct(productId);
+		
+		model.addAttribute("product", product);
+		
+		return "productContentsEditor";
+	}
+	
+	@RequestMapping(value="/contents", method = RequestMethod.POST)
+	@ResponseBody
+	public SimpleJsonResponse save(SimpleJsonResponse jsonRes, Product pp){
+		
+		Product product = service.getProduct(pp.getId());
+		
+		product.setContents(pp.getContents());
+		
+		service.save(product);
+		
+		return jsonRes;
+	}
 
 }
 //end of ProductController.java

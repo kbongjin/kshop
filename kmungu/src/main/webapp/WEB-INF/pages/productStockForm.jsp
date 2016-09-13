@@ -39,14 +39,14 @@
     	  $('#modalDel').show();
     	  </c:if>
     	  
-    	  FormOptions = {
+    	  $.extend( FormOptions, {
       			getDeleteUrl : function(){
       				return "product/stock/" + $('form.pfrm [name="id"]').val();
       	  		},
       	  		reloadTable : function(callback, resetPaging){
       	  			sTable.ajax.reload(callback, resetPaging);
       	  		}
-      	  };
+      	  });
     	  
     	  <c:if test="${stock == null }">
     	  $( 'form.pfrm [name="qty"]' ).keyup(function(e) {
