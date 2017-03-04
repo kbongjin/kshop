@@ -26,8 +26,8 @@ public class ProductImg {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int key;//
 	
-	@Column(name = "product_id")
-	private int productId;//
+	@Column(name = "product_master_id")
+	private Integer productMasterId;//
 	
 	@Column(name = "img_path")
 	private String imgPath;//
@@ -45,9 +45,9 @@ public class ProductImg {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ProductImg(int productId, String imgPath, Long fileSize) {
+	public ProductImg(Integer productMasterId, String imgPath, Long fileSize) {
 		super();
-		this.productId = productId;
+		this.productMasterId = productMasterId;
 		this.imgPath = imgPath;
 		this.fileSize = fileSize;
 	}
@@ -66,18 +66,12 @@ public class ProductImg {
 		this.key = key;
 	}
 
-	/**
-	 * @return the productId
-	 */
-	public int getProductId() {
-		return productId;
+	public Integer getProductMasterId() {
+		return productMasterId;
 	}
 
-	/**
-	 * @param productId the productId to set
-	 */
-	public void setProductId(int productId) {
-		this.productId = productId;
+	public void setProductMasterId(Integer productMasterId) {
+		this.productMasterId = productMasterId;
 	}
 
 	/**

@@ -4,15 +4,15 @@
 			<div class="row">
 			  <div class="col-sm-6 col-md-4">
 			  	 <div class="thumbnail">
-			      <img src="${product.img1Path}" width="180">
+			      <img src="${product.productMaster.img1Path}" width="180">
 			      <div class="caption">
-			        <h3>${product.name}</h3>
-			        <p>...</p>
+			        <h4>${product.productMaster.name}</h4>
+			        <p>${product.name}</p>
 			      </div>
 			    </div>
 			  </div>
 			  <div class="col-sm-12 col-md-8">
-					<form action="product/stock" method="POST" data-parsley-validate class="form-horizontal form-label-left pfrm">
+					<form id="stockForm" action="product/stock" method="POST" data-parsley-validate class="form-horizontal form-label-left pfrm">
 					  <input type="hidden" name="id" value="${stock.id}"/>
 					  <input type="hidden" name="productId" value="${productId}"/>
                       <div class="form-group">
@@ -41,16 +41,19 @@
     	  
     	  $.extend( FormOptions, {
       			getDeleteUrl : function(){
-      				return "product/stock/" + $('form.pfrm [name="id"]').val();
-      	  		},
-      	  		reloadTable : function(callback, resetPaging){
-      	  			sTable.ajax.reload(callback, resetPaging);
-      	  		}
+      				return "product/stock/" + $('#stockForm [name="id"]').val();
+      	  		},	
+	      	  	onAfterSaveSuccess : function(responseJson){
+	      	  		sTable.ajax.reload(null, true);
+		  		},
+		  		onAfterDeleteSuccess : function(responseJson){
+		  			sTable.ajax.reload(null, true);
+		  		}
       	  });
     	  
     	  <c:if test="${stock == null }">
-    	  $( 'form.pfrm [name="qty"]' ).keyup(function(e) {
-    		  $( 'form.pfrm [name="stockQty"]' ).val(this.value);
+    	  $( '#stockForm [name="qty"]' ).keyup(function(e) {
+    		  $( '#stockForm [name="stockQty"]' ).val(this.value);
     	  });
     	  </c:if>
       });

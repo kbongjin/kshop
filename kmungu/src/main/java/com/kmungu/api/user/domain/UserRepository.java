@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
  * @author Bongjin Kwon
  * @version 1.0
  */
-@Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
 	User findByLoginId(String loginId);

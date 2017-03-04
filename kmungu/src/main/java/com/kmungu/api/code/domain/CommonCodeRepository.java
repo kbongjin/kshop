@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
  * @author Bongjin Kwon
  * @version 1.0
  */
-@Repository
 public interface CommonCodeRepository extends JpaRepository<CommonCode, CommonCodePK> {
 
 	List<CommonCode> findByGroupCd(String groupCd);

@@ -24,6 +24,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.kmungu.api.common.converter.StringToNumberConverterFactory;
 import com.kmungu.api.common.mvc.LoginCheckInterceptor;
 
 /**
@@ -45,9 +46,13 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	
 	@Override
     public void addViewControllers(ViewControllerRegistry registry) {
+		registry.addViewController("/orderMng").setViewName("page.orderMng");//신규 주문
+		
         registry.addViewController("/dashboard").setViewName("page.dashboard");
-        registry.addViewController("/productMng").setViewName("page.productMng");
+        registry.addViewController("/productMasterMng").setViewName("page.productMasterMng");//상품관리
         registry.addViewController("/productForm").setViewName("productForm");
+        
+        registry.addViewController("/categoryMng").setViewName("page.categoryMng");//상품 카테고리 관리
     }
 
 	@Override
@@ -56,8 +61,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 		// 'yyyy-MM-dd' format string to Date converting.
 		//registry.addFormatter(new DateFormatter("yyyy-MM-dd"));
 
-		//registry.removeConvertible(String.class, Number.class);// remove default converter.
-		//registry.addConverterFactory(new StringToNumberConverterFactory());
+		registry.removeConvertible(String.class, Number.class);// remove default converter.
+		registry.addConverterFactory(new StringToNumberConverterFactory());
 	}
 	
 	/**

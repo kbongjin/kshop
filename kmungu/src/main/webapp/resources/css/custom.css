@@ -2884,10 +2884,11 @@ ul.project_files li a i {
   border-right: 2px solid transparent; }
 
 /* *********  /pricing  **************************** */
-/* *********  media gallery  **************************** */
+/* *********  media gallery  **************************** 
 .thumbnail .image {
   height: 120px;
   overflow: hidden; }
+*/
 
 .caption {
   padding: 9px 5px;
@@ -2895,11 +2896,12 @@ ul.project_files li a i {
 
 .caption p {
   margin-bottom: 5px; }
-
+  
+/*
 .thumbnail {
   height: 190px;
   overflow: hidden; }
-
+*/
 .view {
   overflow: hidden;
   position: relative;
@@ -3963,7 +3965,7 @@ ul.verticle_bars li {
   width: 35px; }
 
 /** bootstrap-progressbar  **/
-/** PNotify **/
+/** PNotify 
 .alert-success {
   color: #ffffff;
   background-color: rgba(38, 185, 154, 0.88);
@@ -3978,12 +3980,17 @@ ul.verticle_bars li {
   color: #E9EDEF;
   background-color: rgba(243, 156, 18, 0.88);
   border-color: rgba(243, 156, 18, 0.88); }
-
+**/
 .alert-danger,
 .alert-error {
   color: #E9EDEF;
   background-color: rgba(231, 76, 60, 0.88);
   border-color: rgba(231, 76, 60, 0.88); }
+  
+form div.alert {
+	margin-bottom: 0;
+}
+
 
 .ui-pnotify.dark .ui-pnotify-container {
   color: #E9EDEF;
@@ -4308,3 +4315,26 @@ ul.notifications {
   border: 1px solid #e5e5e5; }
 
 /** /Dropzone.js **/
+
+.nav-tabs>li>a>span.rm-link {
+	position: absolute;
+	top: 10px ;
+	right: 5px;
+	visibility: hidden;
+}
+.nav-tabs>li>a:hover>span.rm-link {
+	visibility: visible;
+	cursor: pointer;
+	color: #C5C7CB;
+}
+.nav-tabs>li>a:hover>span.rm-link:hover {
+	color: red;
+}
+
+table tbody tr.selected {
+  background: rgba(38, 185, 154, 0.16); }
+
+table tbody tr.selected td, table tbody tr.selected th {
+  border-top: 1px solid rgba(38, 185, 154, 0.4);
+  border-bottom: 1px solid rgba(38, 185, 154, 0.4); }
+

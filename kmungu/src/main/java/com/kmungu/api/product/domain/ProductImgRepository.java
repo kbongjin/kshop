@@ -16,7 +16,6 @@ import com.kmungu.api.product.domain.ProductImg;
  * @author Bongjin Kwon
  * @version 1.0
  */
-@Repository
 public interface ProductImgRepository extends JpaRepository<ProductImg, Integer>, JpaSpecificationExecutor<ProductImg> {
 
 	

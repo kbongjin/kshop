@@ -1,0 +1,32 @@
+<project name="kmungu" basedir="." default="deploy2AWS">
+	
+	
+	
+	<target name="deploy2AWS">
+		
+		<!-- 
+		<setproxy socksproxyhost="localhost" socksproxyport="20024"/>
+		-->
+
+		<property name="server.ip" value="54.175.177.59" />
+		<property name="server.port" value="10022" />
+		<!--
+		<property name="user.id" value="nice" />
+		<property name="user.passwd" value="niceOSC2015" />
+		-->
+		<property name="user.id" value="ec2-user" />
+		<property name="user.passwd" value="" />
+		<property name="deploy.file" value="kmungu.war" />
+		<!--
+		<property name="deploy.path" value="/home/nice/pilot" />
+		-->
+		<property name="deploy.path" value="/home/ec2-user/app/instance1/webapps" />
+
+
+		<scp port="${server.port}" file="${basedir}\target\${deploy.file}" todir="${user.id}@${server.ip}:${deploy.path}/${deploy.file}" 
+			verbose="true" keyfile="G:/project/bootstrap/myaws.pem" password="${user.passwd}" trust="true" />
+
+
+	</target>
+
+</project>

@@ -17,29 +17,17 @@ import com.kmungu.api.product.domain.Product;
  *
  */
 public class ProductSpecs {
-	public static Specification<Product> likeCtg1(final String ctg1) {
+	public static Specification<Product> eqProductMasterId(final Integer productMasterId) {
 		
 		return new Specification<Product>() {
 
 			@Override
 			public Predicate toPredicate(Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				
-				return cb.like(root.<String>get("categoryCd"), ctg1 +'%');
+				return cb.equal(root.<Integer>get("productMasterId"), productMasterId);
 			}
 			
 		};
 	}
 	
-	public static Specification<Product> eqCtg2(final String ctg2) {
-		
-		return new Specification<Product>() {
-
-			@Override
-			public Predicate toPredicate(Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-				
-				return cb.equal(root.<String>get("categoryCd"), ctg2 );
-			}
-			
-		};
-	}
 }

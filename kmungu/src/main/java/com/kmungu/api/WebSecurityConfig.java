@@ -94,7 +94,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //.tokenValiditySeconds(60 * 60 * 24)
                 //.rememberMeServices(tokenBasedRememberMeServices())
 			.csrf().disable()
-			.setSharedObject(RememberMeServices.class, tokenBasedRememberMeServices());
+			//X-Frame-Options config
+			.headers().frameOptions().sameOrigin()
+			.and().setSharedObject(RememberMeServices.class, tokenBasedRememberMeServices());
 	}
 
 	@Autowired

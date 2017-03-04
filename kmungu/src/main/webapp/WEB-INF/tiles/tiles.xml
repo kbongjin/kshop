@@ -16,7 +16,6 @@
 
 
     <!-- Pages -->  
-
     <definition name="page.*" extends="layout.basic">
     	<put-attribute name="page-css" value="/WEB-INF/tiles/view/{1}-css.jsp" />
         <put-attribute name="page-body" value="/WEB-INF/tiles/view/{1}.jsp" />

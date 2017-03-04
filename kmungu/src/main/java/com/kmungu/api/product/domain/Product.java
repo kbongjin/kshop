@@ -16,6 +16,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -24,6 +27,7 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.kmungu.api.category.domain.Category;
 import com.kmungu.api.common.converter.JsonDateSerializer;
 import com.kmungu.api.common.util.JSONUtil;
 import com.kmungu.api.common.util.WebUtil;
@@ -46,32 +50,17 @@ public class Product {
 	@Column(name = "name")
 	private String name;//
 	
-	@Column(name = "img1_path")
-	private String img1Path;//
+	@Column(name = "product_master_id")
+	private Integer productMasterId;//
 	
 	@Column(name = "retail_price")
 	private int retailPrice;//소매가격(할인전 판매가격)
-	
-	@Column(name = "discount_rate")
-	private Float discountRate;//
 	
 	@Column(name = "discount_price")
 	private int discountPrice;//
 	
 	@Column(name = "selling_price")
 	private int sellingPrice;//실제 판매 가격
-	
-	@Column(name = "img2_path")
-	private String img2Path;//
-	
-	@Column(name = "img3_path")
-	private String img3Path;//
-	
-	@Column(name = "contents")
-	private String contents;//
-	
-	@Column(name = "category_cd")
-	private String categoryCd;//
 	
 	@Column(name = "stock_qty")
 	private int stockQty; // 재고 수량.
@@ -87,29 +76,13 @@ public class Product {
 	@Column(name = "update_user_id")
 	private Long updateUserId;
 	
-	@Transient
-	private String imgUri;
+	@Column(name = "hidden_reason")
+	private String hiddenReason;
 	
-	@OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
-	@JoinColumn(name = "product_id", insertable = false, updatable = false)
-	private List<ProductImg> productImgs;
+	@ManyToOne
+	@JoinColumn(name = "product_master_id", insertable = false, updatable = false)
+	private ProductMaster productMaster;
 	
-	@JsonIgnore
-	@Transient
-	private List<String> initialPreviews = new ArrayList<String>();
-	
-	@JsonIgnore
-	@Transient
-	private List<FileInputInitialPreviewConfig> initialPreviewConfigs = new ArrayList<FileInputInitialPreviewConfig>();
-	
-	@JsonIgnore
-	@Transient
-	private String initialPreview;
-	
-	@JsonIgnore
-	@Transient
-	private String initialPreviewConfig;
-
 
 	public Product() {
 		
@@ -143,23 +116,20 @@ public class Product {
 		this.name = name;
 	}
 
-	/**
-	 * @return the img1Path
-	 */
-	public String getImg1Path() {
-		
-		if (productImgs != null && productImgs.size() > 0) {
-			return getImgUri() + productImgs.get(0).getImgPath();
-		}
-		
-		return null;
+	public Integer getProductMasterId() {
+		return productMasterId;
 	}
 
-	/**
-	 * @param img1Path the img1Path to set
-	 */
-	public void setImg1Path(String img1Path) {
-		this.img1Path = img1Path;
+	public void setProductMasterId(Integer productMasterId) {
+		this.productMasterId = productMasterId;
+	}
+
+	public ProductMaster getProductMaster() {
+		return productMaster;
+	}
+
+	public void setProductMaster(ProductMaster productMaster) {
+		this.productMaster = productMaster;
 	}
 
 	/**
@@ -174,20 +144,6 @@ public class Product {
 	 */
 	public void setRetailPrice(int retailPrice) {
 		this.retailPrice = retailPrice;
-	}
-
-	/**
-	 * @return the discountRate
-	 */
-	public Float getDiscountRate() {
-		return discountRate;
-	}
-
-	/**
-	 * @param discountRate the discountRate to set
-	 */
-	public void setDiscountRate(Float discountRate) {
-		this.discountRate = discountRate;
 	}
 
 	/**
@@ -218,62 +174,6 @@ public class Product {
 		this.sellingPrice = sellingPrice;
 	}
 
-	/**
-	 * @return the img2Path
-	 */
-	public String getImg2Path() {
-		return img2Path;
-	}
-
-	/**
-	 * @param img2Path the img2Path to set
-	 */
-	public void setImg2Path(String img2Path) {
-		this.img2Path = img2Path;
-	}
-
-	/**
-	 * @return the img3Path
-	 */
-	public String getImg3Path() {
-		return img3Path;
-	}
-
-	/**
-	 * @param img3Path the img3Path to set
-	 */
-	public void setImg3Path(String img3Path) {
-		this.img3Path = img3Path;
-	}
-
-	/**
-	 * @return the contents
-	 */
-	public String getContents() {
-		return contents;
-	}
-
-	/**
-	 * @param contents the contents to set
-	 */
-	public void setContents(String contents) {
-		this.contents = contents;
-	}
-
-	/**
-	 * @return the categoryCd
-	 */
-	public String getCategoryCd() {
-		return categoryCd;
-	}
-
-	/**
-	 * @param categoryCd the categoryCd to set
-	 */
-	public void setCategoryCd(String categoryCd) {
-		this.categoryCd = categoryCd;
-	}
-
 	public int getStockQty() {
 		return stockQty;
 	}
@@ -296,57 +196,6 @@ public class Product {
 		this.createDt = createDt;
 	}
 	
-	public String getImgUri() {
-		return ProductController.IMG_URI;
-	}
-
-	public void setImgUri(String imgUri) {
-		this.imgUri = imgUri;
-	}
-
-	public List<ProductImg> getProductImgs() {
-		return productImgs;
-	}
-
-	public void setProductImgs(List<ProductImg> productImgs) {
-		this.productImgs = productImgs;
-	}
-
-	public List<String> getInitialPreviews() {
-		
-		for (ProductImg pImg : this.productImgs) {
-			initialPreviews.add(getImgUri() + pImg.getImgPath());
-		}
-		
-		return initialPreviews;
-	}
-
-	public List<FileInputInitialPreviewConfig> getInitialPreviewConfigs() {
-		
-		for (ProductImg pImg : this.productImgs) {
-			initialPreviewConfigs.add(new FileInputInitialPreviewConfig(pImg));
-		}
-		
-		return initialPreviewConfigs;
-	}
-
-	public String getInitialPreview() {
-		try{
-			return JSONUtil.objToJson(getInitialPreviews());
-		}catch (IOException e) {
-			return null;
-		}
-	}
-
-	public String getInitialPreviewConfig() {
-		
-		try {
-			return JSONUtil.objToJson(getInitialPreviewConfigs());
-		}catch (IOException e) {
-			return null;
-		}
-	}
-
 	public Date getUpdateDt() {
 		return updateDt;
 	}
@@ -362,18 +211,10 @@ public class Product {
 	public void setUpdateUserId(Long updateUserId) {
 		this.updateUserId = updateUserId;
 	}
-	
+
 	@PrePersist
 	public void preInsert() {
 		this.createDt = new Date();
 		this.updateDt = this.createDt;
-		this.updateUserId = WebUtil.getLoginUserId();
 	}
-	
-	@PreUpdate
-	public void preUpdate() {
-		this.updateDt = new Date();
-		this.updateUserId = WebUtil.getLoginUserId();
-	}
-
 }
